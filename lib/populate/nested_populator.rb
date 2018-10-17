@@ -33,9 +33,6 @@ module Populate
       out_doc.at("titleId") << in_doc.at("titleId")
       out_doc.at("type") << in_doc.at("type")
 
-      thisYear = out_doc.at("year").pick("years", "year", in_doc.at("citeScore", "year"))
-      thisYear.at("citeScore") << in_doc.at("citeScore", "citescore")
-
       thisYear = in_doc.at("citeScore", "year").get
       out_doc.pick("years", "year", thisYear).at("citeScore") << in_doc.at("citeScore", "citescore")
 

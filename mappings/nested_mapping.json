@@ -1,123 +1,123 @@
 {
-  "mappings": {
-    "journal": { 
-      "properties": { 
-        "name": { 
-          "type": "text",
-          "fields": {
-            "raw": { 
-              "type":  "keyword"
-            }
-          }
-        }, 
-        "bibId": { 
-          "type": "keyword"
-        }, 
-        "clickDataDatabase": {
-          "type": "keyword"
-        },
-        "clickDataIssn": {
-          "type": "keyword"
-        },
-        "clickDataJournal": {
-          "type": "keyword"
-        },
-        "cornellPubCounterTotal": {
-          "type": "integer"
-        },
-        "costperuse": {
-          "type": "float"
-        },
-        "databasePackageCode": {
-          "type": "keyword"
-        },
-        "databasePackageName": {
-          "type": "keyword"
-        },
-        "doi": {
-          "type": "keyword"
-        },
-        "eissnsType": {
-          "type": "keyword"
-        },
-        "eissnsValue": {
-          "type": "keyword"
-        },
-        "issnsType": {
-          "type": "keyword"
-        },
-        "issnsValue": {
-          "type": "keyword"
-        },
-        "overallUses": {
-          "type": "float"
-        },
-        "providerCode": {
-          "type": "keyword"
-        },
-        "providerName": {
-          "type": "keyword"
-        },
-        "publisher": {
-          "type": "keyword"
-        },
-        "ssid": {
-          "type": "keyword"
-        },
-        "status": {
-          "type": "keyword"
-        },
-        "subject": {
-          "type": "keyword"
-        },
-        "title": {
-          "type": "keyword"
-        },
-        "titleId": {
-          "type": "keyword"
-        },
-        "type": {
-          "type": "keyword"
-        },
-        "years": {
-          "type": "nested",
-          "properties": {
-            "year": {
-              "type": "integer"
-            },
-            "citeScore": {
-              "type": "float"
-            },
-            "citeScoreTracker": {
-              "type": "float"
-            },
-            "clickCount": {
-              "type": "integer"
-            },
-            "clickCountNoOfRecords": {
-              "type": "integer"
-            },
-            "cornellPubCounterByYear": {
-              "type": "integer"
-            },
-            "costUsageCost": {
-              "type": "float"
-            },
-            "costUsageTurnaway": {
-              "type": "float"
-            },
-            "costUsageUse": {
-              "type": "float"
-            },
-            "sjr": {
-              "type": "float"
-            },
-            "snip": {
-              "type": "float"
-            }
-          }
-        }
-      }
-    }
-  }
+	"mappings": {
+		"journal": {
+			"properties": {
+				"name": {
+					"type": "text",
+					"fields": {
+						"raw": {
+							"type": "keyword"
+						}
+					}
+				},
+				"bibId": {
+					"type": "keyword"
+				},
+				"clickDataDatabase": {
+					"type": "keyword"
+				},
+				"clickDataIssn": {
+					"type": "keyword"
+				},
+				"clickDataJournal": {
+					"type": "keyword"
+				},
+				"cornellPubCounterTotal": {
+					"type": "integer"
+				},
+				"costperuse": {
+					"type": "float"
+				},
+				"databasePackageCode": {
+					"type": "keyword"
+				},
+				"databasePackageName": {
+					"type": "keyword"
+				},
+				"doi": {
+					"type": "keyword"
+				},
+				"eissnsType": {
+					"type": "keyword"
+				},
+				"eissnsValue": {
+					"type": "keyword"
+				},
+				"issnsType": {
+					"type": "keyword"
+				},
+				"issnsValue": {
+					"type": "keyword"
+				},
+				"overallUses": {
+					"type": "float"
+				},
+				"providerCode": {
+					"type": "keyword"
+				},
+				"providerName": {
+					"type": "keyword"
+				},
+				"publisher": {
+					"type": "keyword"
+				},
+				"ssid": {
+					"type": "keyword"
+				},
+				"status": {
+					"type": "keyword"
+				},
+				"subject": {
+					"type": "keyword"
+				},
+				"title": {
+					"type": "keyword"
+				},
+				"titleId": {
+					"type": "keyword"
+				},
+				"type": {
+					"type": "keyword"
+				},
+				"years": {
+					"type": "nested",
+					"properties": {
+						"year": {
+							"type": "integer"
+						},
+						"citeScore": {
+							"type": "float"
+						},
+						"citeScoreTracker": {
+							"type": "float"
+						},
+						"clickCount": {
+							"type": "integer"
+						},
+						"clickCountNoOfRecords": {
+							"type": "integer"
+						},
+						"cornellPubCounterByYear": {
+							"type": "integer"
+						},
+						"costUsageCost": {
+							"type": "float"
+						},
+						"costUsageTurnaway": {
+							"type": "float"
+						},
+						"costUsageUse": {
+							"type": "float"
+						},
+						"sjr": {
+							"type": "float"
+						},
+						"snip": {
+							"type": "float"
+						}
+					}
+				}
+			}
+		}
+	}
 }

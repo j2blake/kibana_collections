@@ -41,7 +41,7 @@ module Populate
     end
 
     def send_to_stdout(id, mapping, doc)
-      puts "BOGUS output_document"
+      puts "BOGUS output_document #{id}"
       pp(doc)
     end
 

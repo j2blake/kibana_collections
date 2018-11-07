@@ -1,89 +1,5 @@
 [
   {
-    "_id": "31f821e0-dde3-11e8-99c9-030574f6d7bd",
-    "_type": "visualization",
-    "_source": {
-      "title": "Journals list (stamped)",
-      "visState": "{\"title\":\"Journals list (stamped)\",\"type\":\"table\",\"params\":{\"perPage\":8,\"showMetricsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"name.raw\",\"size\":100,\"order\":\"asc\",\"orderBy\":\"_key\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"Journal name\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"top_hits\",\"schema\":\"metric\",\"params\":{\"field\":\"bibId\",\"aggregate\":\"concat\",\"size\":1,\"sortField\":\"year\",\"sortOrder\":\"desc\",\"customLabel\":\"Catalog page\"}},{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCount\",\"customLabel\":\"Click counts\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"cornellPubCounterTotal\",\"customLabel\":\"Cornell pub counter\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"costperuse\",\"customLabel\":\"Average cost per use\"}},{\"id\":\"5\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"costUsageTurnaway\",\"customLabel\":\"Maximum turnaway\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"overallUses\",\"customLabel\":\"Overall uses\"}}]}",
-      "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
-      }
-    }
-  },
-  {
-    "_id": "5b6d0b90-ddf1-11e8-99c9-030574f6d7bd",
-    "_type": "visualization",
-    "_source": {
-      "title": "scatter plot (vega) (stamped)",
-      "visState": "{\"title\":\"scatter plot (vega) (stamped)\",\"type\":\"vega\",\"params\":{\"spec\":\"{\\n  \\\"$schema\\\": \\\"https://vega.github.io/schema/vega/v3.json\\\",\\n  \\\"padding\\\": 5,\\n\\n  \\\"data\\\": [\\n  {\\n    \\\"name\\\": \\\"raw\\\",\\n    \\\"url\\\": {\\n      \\\"%context%\\\": true,\\n      \\\"%timefield%\\\": \\\"year\\\",\\n      \\\"index\\\": \\\"collection_analysis_stamped\\\",\\n      \\\"body\\\": {\\n        \\\"size\\\": 10000,\\n        \\\"_source\\\": [\\\"costUsageCost\\\", \\\"costUsageTurnaway\\\", \\\"costUsageUse\\\"]\\n      }\\n    },\\n    \\\"format\\\": {\\n      \\\"property\\\": \\\"hits.hits\\\"\\n    }\\n  },\\n  {\\n    \\\"name\\\": \\\"valid\\\",\\n    \\\"source\\\": \\\"raw\\\",\\n    \\\"transform\\\": [\\n      {\\n        \\\"type\\\": \\\"filter\\\",\\n        \\\"expr\\\": \\\"datum._source.costUsageCost != null && datum._source.costUsageTurnaway != null && datum._source.costUsageUse != null\\\"\\n      }\\n    ]\\n  }\\n  ],\\n  \\\"scales\\\": [\\n    {\\n      \\\"name\\\": \\\"x\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"round\\\": true,\\n      \\\"nice\\\": true,\\n      \\\"zero\\\": true,\\n      \\\"domain\\\": {\\\"data\\\": \\\"valid\\\", \\\"field\\\": \\\"_source.costUsageCost\\\"},\\n      \\\"range\\\": \\\"width\\\"\\n    },\\n    {\\n      \\\"name\\\": \\\"y\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"round\\\": true,\\n      \\\"nice\\\": true,\\n      \\\"zero\\\": true,\\n      \\\"domain\\\": {\\\"data\\\": \\\"valid\\\", \\\"field\\\": \\\"_source.costUsageUse\\\"},\\n      \\\"range\\\": \\\"height\\\"\\n    },\\n    {\\n      \\\"name\\\": \\\"size\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"round\\\": true,\\n      \\\"nice\\\": false,\\n      \\\"zero\\\": true,\\n      \\\"domain\\\": {\\\"data\\\": \\\"valid\\\", \\\"field\\\": \\\"_source.costUsageTurnaway\\\"},\\n      \\\"range\\\": [4,361]\\n    }\\n  ],\\n\\n  \\\"axes\\\": [\\n    {\\n      \\\"scale\\\": \\\"x\\\",\\n      \\\"grid\\\": true,\\n      \\\"domain\\\": false,\\n      \\\"orient\\\": \\\"bottom\\\",\\n      \\\"tickCount\\\": 5,\\n      \\\"title\\\": \\\"Cost\\\"\\n    },\\n    {\\n      \\\"scale\\\": \\\"y\\\",\\n      \\\"grid\\\": true,\\n      \\\"domain\\\": false,\\n      \\\"orient\\\": \\\"left\\\",\\n      \\\"titlePadding\\\": 5,\\n      \\\"title\\\": \\\"Use\\\"\\n    }\\n  ],\\n\\n  \\\"legends\\\": [\\n    {\\n      \\\"size\\\": \\\"size\\\",\\n      \\\"title\\\": \\\"Turnaway\\\",\\n      \\\"format\\\": \\\"s\\\",\\n      \\\"encode\\\": {\\n        \\\"symbols\\\": {\\n          \\\"update\\\": {\\n            \\\"strokeWidth\\\": {\\\"value\\\": 2},\\n            \\\"opacity\\\": {\\\"value\\\": 0.5},\\n            \\\"stroke\\\": {\\\"value\\\": \\\"#4682b4\\\"},\\n            \\\"shape\\\": {\\\"value\\\": \\\"circle\\\"}\\n          }\\n        }\\n      }\\n    }\\n  ],\\n\\n  \\\"marks\\\": [\\n    {\\n      \\\"name\\\": \\\"marks\\\",\\n      \\\"type\\\": \\\"symbol\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"valid\\\"},\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\\"scale\\\": \\\"x\\\", \\\"field\\\": \\\"_source.costUsageCost\\\"},\\n          \\\"y\\\": {\\\"scale\\\": \\\"y\\\", \\\"field\\\": \\\"_source.costUsageUse\\\"},\\n          \\\"size\\\": {\\\"scale\\\": \\\"size\\\", \\\"field\\\": \\\"_source.costUsageTurnaway\\\"},\\n          \\\"shape\\\": {\\\"value\\\": \\\"circle\\\"},\\n          \\\"strokeWidth\\\": {\\\"value\\\": 2},\\n          \\\"opacity\\\": {\\\"value\\\": 0.5},\\n          \\\"stroke\\\": {\\\"value\\\": \\\"#4682b4\\\"},\\n          \\\"fill\\\": {\\\"value\\\": \\\"transparent\\\"}\\n        }\\n      }\\n    }\\n  ]\\n}\\n\"},\"aggs\":[]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
-      }
-    }
-  },
-  {
-    "_id": "00960f80-dddf-11e8-99c9-030574f6d7bd",
-    "_type": "visualization",
-    "_source": {
-      "title": "Control panel (stamped)",
-      "visState": "{\"title\":\"Control panel (stamped)\",\"type\":\"input_control_vis\",\"params\":{\"controls\":[{\"id\":\"1541080879458\",\"indexPattern\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"fieldName\":\"name.raw\",\"parent\":\"\",\"label\":\"Select Journal(s)\",\"type\":\"list\",\"options\":{\"type\":\"terms\",\"multiselect\":true,\"dynamicOptions\":true,\"size\":5,\"order\":\"desc\"}}],\"updateFiltersOnChange\":true,\"useTimeFilter\":false,\"pinFilters\":false},\"aggs\":[]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
-      }
-    }
-  },
-  {
-    "_id": "388463a0-dd2c-11e8-af76-417a3df99938",
-    "_type": "visualization",
-    "_source": {
-      "title": "Click counts (stamped)",
-      "visState": "{\"title\":\"Click counts (stamped)\",\"type\":\"line\",\"params\":{\"type\":\"line\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Click counts\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"line\",\"mode\":\"normal\",\"data\":{\"label\":\"Click counts\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCount\",\"customLabel\":\"Click counts\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Years\"}}]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
-      }
-    }
-  },
-  {
-    "_id": "822fa460-dd2c-11e8-af76-417a3df99938",
-    "_type": "visualization",
-    "_source": {
-      "title": "Cornell pub counter (stamped)",
-      "visState": "{\"title\":\"Cornell pub counter (stamped)\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Cornell pub counter\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Cornell pub counter\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"cornellPubCounterByYear\",\"customLabel\":\"Cornell pub counter\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Years\"}}]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
-      }
-    }
-  },
-  {
-    "_id": "1e23f320-dde2-11e8-99c9-030574f6d7bd",
-    "_type": "visualization",
-    "_source": {
-      "title": "Click counts 2 (stamped)",
-      "visState": "{\"title\":\"Click counts 2 (stamped)\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-2\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100,\"rotate\":90,\"filter\":false},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"RightAxis-1\",\"type\":\"value\",\"position\":\"right\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Number of records\"}},{\"id\":\"ValueAxis-2\",\"name\":\"LeftAxis-2\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Click counts\"}}],\"seriesParams\":[{\"show\":true,\"mode\":\"normal\",\"type\":\"line\",\"drawLinesBetweenPoints\":true,\"showCircles\":true,\"interpolate\":\"linear\",\"data\":{\"id\":\"3\",\"label\":\"Number of records\"},\"valueAxis\":\"ValueAxis-1\"},{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Click counts\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-2\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Year\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCountNoOfRecords\",\"customLabel\":\"Number of records\"}},{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCount\",\"customLabel\":\"Click counts\"}}]}",
-      "uiStateJSON": "{}",
-      "description": "",
-      "version": 1,
-      "kibanaSavedObjectMeta": {
-        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
-      }
-    }
-  },
-  {
     "_id": "65a83c90-dddf-11e8-99c9-030574f6d7bd",
     "_type": "dashboard",
     "_source": {
@@ -113,6 +29,90 @@
       "timeFieldName": "year",
       "fields": "[{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"bibId\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"citeScore\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"citeScoreTracker\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"clickCount\",\"type\":\"number\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"clickCountNoOfRecords\",\"type\":\"number\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"clickDataDatabase\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"clickDataIssn\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"clickDataJournal\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"cornellPubCounterByYear\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"cornellPubCounterTotal\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"costUsageCost\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"costUsageTurnaway\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"costUsageUse\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"costperuse\",\"type\":\"number\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"databasePackageCode\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"databasePackageName\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"doi\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"eissnsType\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"eissnsValue\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"issnsType\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"issnsValue\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"name\",\"type\":\"string\",\"count\":2,\"scripted\":false,\"searchable\":true,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"name.raw\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"overallUses\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"providerCode\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"providerName\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"publisher\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"sjr\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"snip\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"ssid\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"status\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"subject\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"title\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"titleId\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"year\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true}]",
       "fieldFormatMap": "{\"bibId\":{\"id\":\"url\",\"params\":{\"urlTemplate\":\"https://newcatalog.library.cornell.edu/catalog/{{value}}\",\"labelTemplate\":\"{{value}}\"}}}"
+    }
+  },
+  {
+    "_id": "1e23f320-dde2-11e8-99c9-030574f6d7bd",
+    "_type": "visualization",
+    "_source": {
+      "title": "Click counts 2 (stamped)",
+      "visState": "{\"title\":\"Click counts 2 (stamped)\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-2\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100,\"rotate\":90,\"filter\":false},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"RightAxis-1\",\"type\":\"value\",\"position\":\"right\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Number of records\"}},{\"id\":\"ValueAxis-2\",\"name\":\"LeftAxis-2\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Click counts\"}}],\"seriesParams\":[{\"show\":true,\"mode\":\"normal\",\"type\":\"line\",\"drawLinesBetweenPoints\":true,\"showCircles\":true,\"interpolate\":\"linear\",\"data\":{\"id\":\"3\",\"label\":\"Number of records\"},\"valueAxis\":\"ValueAxis-1\"},{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Click counts\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-2\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Year\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCountNoOfRecords\",\"customLabel\":\"Number of records\"}},{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCount\",\"customLabel\":\"Click counts\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "822fa460-dd2c-11e8-af76-417a3df99938",
+    "_type": "visualization",
+    "_source": {
+      "title": "Cornell pub counter (stamped)",
+      "visState": "{\"title\":\"Cornell pub counter (stamped)\",\"type\":\"histogram\",\"params\":{\"type\":\"histogram\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Cornell pub counter\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"stacked\",\"data\":{\"label\":\"Cornell pub counter\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"cornellPubCounterByYear\",\"customLabel\":\"Cornell pub counter\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Years\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "388463a0-dd2c-11e8-af76-417a3df99938",
+    "_type": "visualization",
+    "_source": {
+      "title": "Click counts (stamped)",
+      "visState": "{\"title\":\"Click counts (stamped)\",\"type\":\"line\",\"params\":{\"type\":\"line\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Click counts\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"line\",\"mode\":\"normal\",\"data\":{\"label\":\"Click counts\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCount\",\"customLabel\":\"Click counts\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Years\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "00960f80-dddf-11e8-99c9-030574f6d7bd",
+    "_type": "visualization",
+    "_source": {
+      "title": "Control panel (stamped)",
+      "visState": "{\"title\":\"Control panel (stamped)\",\"type\":\"input_control_vis\",\"params\":{\"controls\":[{\"id\":\"1541080879458\",\"indexPattern\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"fieldName\":\"name.raw\",\"parent\":\"\",\"label\":\"Select Journal(s)\",\"type\":\"list\",\"options\":{\"type\":\"terms\",\"multiselect\":true,\"dynamicOptions\":true,\"size\":5,\"order\":\"desc\"}}],\"updateFiltersOnChange\":true,\"useTimeFilter\":false,\"pinFilters\":false},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "5b6d0b90-ddf1-11e8-99c9-030574f6d7bd",
+    "_type": "visualization",
+    "_source": {
+      "title": "scatter plot (vega) (stamped)",
+      "visState": "{\"title\":\"scatter plot (vega) (stamped)\",\"type\":\"vega\",\"params\":{\"spec\":\"{\\n  \\\"$schema\\\": \\\"https://vega.github.io/schema/vega/v3.json\\\",\\n  \\\"padding\\\": 5,\\n\\n  \\\"data\\\": [\\n  {\\n    \\\"name\\\": \\\"raw\\\",\\n    \\\"url\\\": {\\n      \\\"%context%\\\": true,\\n      \\\"%timefield%\\\": \\\"year\\\",\\n      \\\"index\\\": \\\"collection_analysis_stamped\\\",\\n      \\\"body\\\": {\\n        \\\"size\\\": 10000,\\n        \\\"_source\\\": [\\\"costUsageCost\\\", \\\"costUsageTurnaway\\\", \\\"costUsageUse\\\"]\\n      }\\n    },\\n    \\\"format\\\": {\\n      \\\"property\\\": \\\"hits.hits\\\"\\n    }\\n  },\\n  {\\n    \\\"name\\\": \\\"valid\\\",\\n    \\\"source\\\": \\\"raw\\\",\\n    \\\"transform\\\": [\\n      {\\n        \\\"type\\\": \\\"filter\\\",\\n        \\\"expr\\\": \\\"datum._source.costUsageCost != null && datum._source.costUsageTurnaway != null && datum._source.costUsageUse != null\\\"\\n      }\\n    ]\\n  }\\n  ],\\n  \\\"scales\\\": [\\n    {\\n      \\\"name\\\": \\\"x\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"round\\\": true,\\n      \\\"nice\\\": true,\\n      \\\"zero\\\": true,\\n      \\\"domain\\\": {\\\"data\\\": \\\"valid\\\", \\\"field\\\": \\\"_source.costUsageCost\\\"},\\n      \\\"range\\\": \\\"width\\\"\\n    },\\n    {\\n      \\\"name\\\": \\\"y\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"round\\\": true,\\n      \\\"nice\\\": true,\\n      \\\"zero\\\": true,\\n      \\\"domain\\\": {\\\"data\\\": \\\"valid\\\", \\\"field\\\": \\\"_source.costUsageUse\\\"},\\n      \\\"range\\\": \\\"height\\\"\\n    },\\n    {\\n      \\\"name\\\": \\\"size\\\",\\n      \\\"type\\\": \\\"linear\\\",\\n      \\\"round\\\": true,\\n      \\\"nice\\\": false,\\n      \\\"zero\\\": true,\\n      \\\"domain\\\": {\\\"data\\\": \\\"valid\\\", \\\"field\\\": \\\"_source.costUsageTurnaway\\\"},\\n      \\\"range\\\": [4,361]\\n    }\\n  ],\\n\\n  \\\"axes\\\": [\\n    {\\n      \\\"scale\\\": \\\"x\\\",\\n      \\\"grid\\\": true,\\n      \\\"domain\\\": false,\\n      \\\"orient\\\": \\\"bottom\\\",\\n      \\\"tickCount\\\": 5,\\n      \\\"title\\\": \\\"Cost\\\"\\n    },\\n    {\\n      \\\"scale\\\": \\\"y\\\",\\n      \\\"grid\\\": true,\\n      \\\"domain\\\": false,\\n      \\\"orient\\\": \\\"left\\\",\\n      \\\"titlePadding\\\": 5,\\n      \\\"title\\\": \\\"Use\\\"\\n    }\\n  ],\\n\\n  \\\"legends\\\": [\\n    {\\n      \\\"size\\\": \\\"size\\\",\\n      \\\"title\\\": \\\"Turnaway\\\",\\n      \\\"format\\\": \\\"s\\\",\\n      \\\"encode\\\": {\\n        \\\"symbols\\\": {\\n          \\\"update\\\": {\\n            \\\"strokeWidth\\\": {\\\"value\\\": 2},\\n            \\\"opacity\\\": {\\\"value\\\": 0.5},\\n            \\\"stroke\\\": {\\\"value\\\": \\\"#4682b4\\\"},\\n            \\\"shape\\\": {\\\"value\\\": \\\"circle\\\"}\\n          }\\n        }\\n      }\\n    }\\n  ],\\n\\n  \\\"marks\\\": [\\n    {\\n      \\\"name\\\": \\\"marks\\\",\\n      \\\"type\\\": \\\"symbol\\\",\\n      \\\"from\\\": {\\\"data\\\": \\\"valid\\\"},\\n      \\\"encode\\\": {\\n        \\\"update\\\": {\\n          \\\"x\\\": {\\\"scale\\\": \\\"x\\\", \\\"field\\\": \\\"_source.costUsageCost\\\"},\\n          \\\"y\\\": {\\\"scale\\\": \\\"y\\\", \\\"field\\\": \\\"_source.costUsageUse\\\"},\\n          \\\"size\\\": {\\\"scale\\\": \\\"size\\\", \\\"field\\\": \\\"_source.costUsageTurnaway\\\"},\\n          \\\"shape\\\": {\\\"value\\\": \\\"circle\\\"},\\n          \\\"strokeWidth\\\": {\\\"value\\\": 2},\\n          \\\"opacity\\\": {\\\"value\\\": 0.5},\\n          \\\"stroke\\\": {\\\"value\\\": \\\"#4682b4\\\"},\\n          \\\"fill\\\": {\\\"value\\\": \\\"transparent\\\"}\\n        }\\n      }\\n    }\\n  ]\\n}\\n\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "31f821e0-dde3-11e8-99c9-030574f6d7bd",
+    "_type": "visualization",
+    "_source": {
+      "title": "Journals list (stamped)",
+      "visState": "{\"title\":\"Journals list (stamped)\",\"type\":\"table\",\"params\":{\"perPage\":8,\"showMetricsAtAllLevels\":false,\"showPartialRows\":false,\"showTotal\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"name.raw\",\"size\":100,\"order\":\"asc\",\"orderBy\":\"_key\",\"otherBucket\":false,\"otherBucketLabel\":\"Other\",\"missingBucket\":false,\"missingBucketLabel\":\"Missing\",\"customLabel\":\"Journal name\"}},{\"id\":\"7\",\"enabled\":true,\"type\":\"top_hits\",\"schema\":\"metric\",\"params\":{\"field\":\"bibId\",\"aggregate\":\"concat\",\"size\":1,\"sortField\":\"year\",\"sortOrder\":\"desc\",\"customLabel\":\"Catalog page\"}},{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"clickCount\",\"customLabel\":\"Click counts\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"cornellPubCounterTotal\",\"customLabel\":\"Cornell pub counter\"}},{\"id\":\"4\",\"enabled\":true,\"type\":\"avg\",\"schema\":\"metric\",\"params\":{\"field\":\"costperuse\",\"customLabel\":\"Average cost per use\"}},{\"id\":\"5\",\"enabled\":true,\"type\":\"max\",\"schema\":\"metric\",\"params\":{\"field\":\"costUsageTurnaway\",\"customLabel\":\"Maximum turnaway\"}},{\"id\":\"6\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"overallUses\",\"customLabel\":\"Overall uses\"}}]}",
+      "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"ffe2a040-dd29-11e8-af76-417a3df99938\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
     }
   }
 ]

@@ -71,7 +71,7 @@ module Populate
     end
 
     def run
-      load_data_file
+      load_json_file
       process_documents
     end
 

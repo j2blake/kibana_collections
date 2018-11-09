@@ -1,0 +1,27 @@
+{
+	"mappings": {
+		"_doc": {
+			"properties": {
+				"name": {
+					"type": "keyword"
+				},
+				"doi": {
+					"type": "keyword"
+				},
+				"usage": {
+					"type": "integer"
+				},
+				"price": {
+					"type": "float"
+				},
+				"time": {
+					"type": "date",
+					"format": "yyyy Z"
+				},
+				"year": {
+					"type": "integer"
+				}
+			}
+		}
+	}
+}

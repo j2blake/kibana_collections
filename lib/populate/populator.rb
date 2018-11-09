@@ -1,3 +1,4 @@
+require 'csv'
 require 'json'
 require 'net/http'
 require 'pp' #BOGUS
@@ -18,9 +19,20 @@ module Populate
       @index_name = ARGV[1]
     end
 
-    def load_data_file
+    def load_json_file
       File.open(@filename) do |f|
         @input_hash = JSON.load(f)
+      end
+    end
+
+    def load_csv_file
+      @input_array = []
+      CSV.foreach(@filename, :headers => true) do |row|
+        row_hash = {}
+        row.each do |key, value|
+          row_hash[key] = value
+        end
+        @input_array << row_hash
       end
     end
 

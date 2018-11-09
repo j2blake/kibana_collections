@@ -59,7 +59,7 @@ module Populate
     end
 
     def run
-      load_data_file
+      load_json_file
       populate_output_array
       send_documents
     end

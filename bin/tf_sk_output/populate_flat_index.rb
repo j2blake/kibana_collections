@@ -8,8 +8,8 @@ Populate a flat index with the contents of a file, named on the command line.
 --------------------------------------------------------------------------------
 =end
 
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path("../../../lib", __FILE__)
 require 'populate/populator'
-require 'populate/flat_populator'
+require 'tf_sk_output/flat_populator'
 
-Populate::FlatPopulator.new.run
+TF_SK_Output::FlatPopulator.new.run

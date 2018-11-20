@@ -1,4 +1,4 @@
-module Populate
+module CostPerUse
   class CostperuseFirstJournalDocument
     attr_reader :name
     attr_reader :doi
@@ -30,7 +30,7 @@ module Populate
     end
   end
 
-  class CostperuseFirstPopulator < Populator
+  class CostperuseFirstPopulator < Populate::Populator
     def process_documents
       @input_array.each do |doc|
         process_document(CostperuseFirstJournalDocument.new(doc))

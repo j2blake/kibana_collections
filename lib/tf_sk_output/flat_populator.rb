@@ -1,5 +1,5 @@
-module Populate
-  class StampedPopulator < Populator
+module TF_SK_Output
+  class FlatPopulator < Populate::Populator
     def process_documents
       @input_hash.each_pair do |doc_name, doc|
         process_document(doc_name, doc)
@@ -43,44 +43,31 @@ module Populate
     end
 
     # Create an Array of year info, with an entry for each year that we have info
-    # NOTE: for the timestamped version, "year" must have a string value.
     def parse_years_info(in_doc)
       years = {}
 
-      thisYear = in_doc.at("citeScore", "year").get.to_s
+      thisYear = in_doc.at("citeScore", "year").get
       years.pick("years", "year", thisYear).at("citeScore") << in_doc.at("citeScore", "citescore")
 
-      thisYear = in_doc.at("citeScoreTracker", "year").get.to_s
+      thisYear = in_doc.at("citeScoreTracker", "year").get
       years.pick("years", "year", thisYear).at("citeScoreTracker") << in_doc.at("citeScoreTracker", "citescoreTracker")
 
       in_doc.at("clickData", "clickCount").get.to_a.each do |h|
-        thisYear = h.at("year").get.to_s
+        thisYear = h.at("year").get
         years.pick("years", "year", thisYear).at("clickCount") << h.at("count")
         years.pick("years", "year", thisYear).at("clickCountNoOfRecords") << h.at("noOfRecords")
       end
 
       in_doc.at("cornellPubCounter", "map").get.to_h.each_pair do |thisYear, count|
-        years.pick("years", "year", thisYear.to_s).at("cornellPubCounterByYear") << count
+        years.pick("years", "year", thisYear).at("cornellPubCounterByYear") << count
       end
 
-      in_doc.at("costUsageData").get.to_a.each do |map|
-        years.pick("years", "year", map["year"]).at("costUsageCost") << map.at("cost");
-        years.pick("years", "year", map["year"]).at("costUsageTurnaway") << map.at("turnaway");
-        years.pick("years", "year", map["year"]).at("costUsageUse") << map.at("use");
-      end
-
-      puts "years: #{years["years"]}"
       return years["years"]
     end
 
     def merge_and_send(doc_info, year_info)
       out_doc = doc_info.merge(year_info)
-      send_document(create_doc_id(out_doc), "journal", out_doc)
-    end
-
-    # Unique ID for each year of each journal
-    def create_doc_id(doc)
-      Zlib.crc32("#{doc["name"]}#{doc["year"]}")
+      send_document(Zlib.crc32(out_doc["name"]), "journal", out_doc)
     end
 
     def run

@@ -8,8 +8,8 @@ Populate a flat index (with timestamps for years) with the contents of a file, n
 --------------------------------------------------------------------------------
 =end
 
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path("../../../lib", __FILE__)
 require 'populate/populator'
-require 'populate/stamped_populator'
+require 'tf_sk_output/stamped_populator'
 
-Populate::StampedPopulator.new.run
+TF_SK_Output::StampedPopulator.new.run

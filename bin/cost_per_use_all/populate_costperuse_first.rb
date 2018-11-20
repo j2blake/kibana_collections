@@ -8,8 +8,8 @@ Populate a flat index (with timestamps for years) with the contents of a file, n
 --------------------------------------------------------------------------------
 =end
 
-$: << File.expand_path("../../lib", __FILE__)
+$: << File.expand_path("../../../lib", __FILE__)
 require 'populate/populator'
-require 'populate/costperuse_first_populator'
+require 'cost_per_use_all/costperuse_first_populator'
 
-Populate::CostperuseFirstPopulator.new.run
+CostPerUse::CostperuseFirstPopulator.new.run

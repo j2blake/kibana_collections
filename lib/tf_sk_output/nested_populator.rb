@@ -1,5 +1,5 @@
-module Populate
-  class NestedPopulator < Populator
+module TF_SK_Output
+  class NestedPopulator < Populate::Populator
     def populate_output_array
       @output_array = []
       @input_hash.each_pair do |doc_name, doc|

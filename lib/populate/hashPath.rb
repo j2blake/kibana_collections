@@ -2,11 +2,8 @@
 # This monkey patch adds a method to Hash that creates a HashPath
 #
 class Hash
-  def at(*path_and_selector)
-    return Populate::HashPath::HashBase.new(self).at(*path_and_selector)
-  end
-  def pick(*path_and_selector_and_value)
-    return Populate::HashPath::HashBase.new(self).pick(*path_and_selector_and_value)
+  def at(*path)
+    return Populate::HashPath::HashBase.new(self).at(*path)
   end
 end
 
@@ -18,20 +15,24 @@ module Populate
       # If the path does not lead to nested Hashes, return nil
       #
       def get
-        branch = locate_if_present
-        return branch ? branch[@selector] : nil
+        return locate_if_present
       end
 
       #
-      # If the value at this path is an array of hashes, get an array of values at this path
-      # in each hash.
+      # If the value at this path is an array of hashes, get an array of values at this 
+      # selector in each hash.
       #
-      # If not an array of hashes, return nil.
+      # If not an array, return nil.
+      # 
+      # If the array contains values that are not hashes, or that do not contain the 
+      # selector as a key, do not include them in the result
       #
-      def values(path)
-        array_of_hashes = self.get
-        return nil unless array_of_hashes.is_a?(Array)
-        return array_of_hashes.select {|h| h.is_a?(Hash)}.map {|h| h.at(path).get}.reject {|v| v == nil}
+      def values(selector)
+        array = self.get
+        return [] unless array.is_a?(Array)
+        array_of_hashes = array.select {|h| h.is_a?(Hash)} 
+        array_of_values = array_of_hashes.map {|h| h.at(selector).get}
+        return array_of_values.reject {|v| v == nil}
       end
 
       #
@@ -48,19 +49,19 @@ module Populate
       #
       def <<(value)
         true_value = resolve_value(value)
-#        puts "----------<<: value=#{value}, true_value=#{true_value}, self=#{self}"
-        append_value(locate_or_create, true_value) if true_value
+        append_value(true_value) if true_value
         return root
       end
 
       def resolve_value(value)
-        value = value.get if value.is_a?(Populate::HashPath::HashPath)
+        value = value.get if value.is_a?(HashPath)
         value = value[0] if value.is_a?(Array) && value.size == 1
         return nil if value == nil || value == "" || value == []
         return value
       end
 
-      def append_value(here, value)
+      def append_value(value)
+        here = @parent.locate_or_create
         existing = here[@selector]
         if existing
           here[@selector] = [*existing] + [*value]
@@ -72,28 +73,38 @@ module Populate
       #
       # Create a path on this HashPath parent
       #
-      def at(*path_and_selector)
-        ps = path_and_selector.slice(0..-2)
-        selector = path_and_selector.slice(-1)
-        return HashPathAt.new(self, ps, selector)
+      def at(*path)
+        selector = path[0]
+        if path.size == 0
+          self
+        elsif path.size == 1
+          at_one_level(selector)
+        else path.size > 1
+          at_one_level(selector).at(*path[1..-1])
+        end
+      end
+
+      def at_one_level(selector)
+        if selector.is_a?(Array)
+          pick(selector[0], selector[1], selector[2])
+        else
+          HashPathAt.new(self, selector)
+        end
       end
 
       #
       # Create a path on this HashPath parent
       #
-      def pick(*path_and_selector_and_value)
-        psv = path_and_selector_and_value.slice(0..-3)
-        selector = path_and_selector_and_value.slice(-2)
-        value = path_and_selector_and_value.slice(-1)
-        true_value = resolve_value(value)
-        return HashPathPick.new(self, psv, selector, true_value)
+      def pick(selector, picker, pick_value)
+        return HashPathPick.new(self, selector, picker, pick_value)
       end
     end
 
     class HashPathAt < HashPath
-      def initialize(parent, path, selector)
+      attr_reader :parent
+      attr_reader :selector
+      def initialize(parent, selector)
         @parent = parent
-        @path = path
         @selector = selector
       end
 
@@ -103,37 +114,35 @@ module Populate
 
       def locate_if_present
         here = @parent.locate_if_present
-#        puts "LIP:Here from parent: #{here}, #{@parent}"
-        @path.each do |p|
-          return nil unless here.is_a?(Hash)
-          here = here[p]
-#          puts "LIP:Here from path "#{p}": #{here}, #{self}"
-        end
-        return here
+        return nil unless here.is_a?(Hash)
+        return here[@selector]
       end
 
       def locate_or_create
         here = @parent.locate_or_create
-#        puts "LOC:Here from parent: #{here}, #{@parent}"
-        @path.each do |p|
-          here[p] = {} unless here[p].is_a?(Hash)
-          here = here[p]
-#          puts "LOC:Here from path: #{here}, #{self}"
-        end
-        return here
+        here[@selector] = {} unless here[@selector].is_a?(Hash)
+        return here[@selector]
+      end
+
+      def ==(other)
+        other.is_a?(HashPathAt) && @parent == other.parent && @selector == other.selector
       end
 
       def to_s
-        "HashPathAt[#{(@path + [@selector]).join(' ')}, parent=#{@parent}]"
+        "HashPathAt[selector=#{@selector}, parent=#{@parent}]"
       end
     end
 
     class HashPathPick < HashPath
-      def initialize(parent, path, selector, value)
+      attr_reader :parent
+      attr_reader :selector
+      attr_reader :picker
+      attr_reader :pick_value
+      def initialize(parent, selector, picker, pick_value)
         @parent = parent
-        @path = path
         @selector = selector
-        @value = value
+        @picker = picker
+        @pick_value = pick_value
       end
 
       def root
@@ -142,54 +151,46 @@ module Populate
 
       def locate_if_present
         here = @parent.locate_if_present
-#        puts "LIP:Here from parent: #{here}, #{@parent}"
-        @path.each do |p|
-          return nil unless here.is_a?(Hash)
-          here = here[p]
-#          puts "LIP:Here from path: #{here}, #{self}"
-        end
-        return nil unless here.is_a?(Array)
-        return here.find do |h|
-          h.is_a?(Hash) && h[@selector] == @value
+        return nil unless here.is_a?(Hash)
+        return nil unless here[@selector].is_a?(Array)
+
+        return here[@selector].find do |h|
+          h.is_a?(Hash) && h[@picker] == @pick_value
         end
       end
 
-      # A little tricky because the last piece of the path must point to an array of Hashes, instead of a single Hash
       def locate_or_create
-        branch_path = Array.new(@path)
-        leaf_path = branch_path.pop
-
         here = @parent.locate_or_create
-#        puts "LOC:Here from parent: #{here}, #{@parent}"
-        branch_path.each do |p|
-          here[p] = {} unless here[p].is_a?(Hash)
-          here = here[p]
-#          puts "LOC:Here from path: #{here}, #{self}"
+        here[@selector] = [] unless here[@selector].is_a?(Array)
+
+        found = here[@selector].find do |h|
+          h.is_a?(Hash) && h[@picker] == @pick_value
         end
 
-        here[leaf_path] = [] unless here[leaf_path].is_a?(Array)
-        array = here[leaf_path]
-#        puts "array: #{array}"
-
-        found = array.find do |h|
-          h.is_a?(Hash) && h[@selector] == @value
+        if found
+          puts "Found it: here[@selector]=#{here[@selector]}, found=#{found}"
         end
 
         if !found
-          found = {@selector => @value}
-          array << found
+          found = {@picker => @pick_value}
+          here[@selector] << found
+          puts "Created it: here[@selector]=#{here[@selector]}, found=#{found}"
         end
 
-#        puts "found: #{found}"
         return found
       end
 
+      def ==(other)
+        other.is_a?(HashPathPick) && @selector == other.selector && @picker == other.picker && @pick_value == other.pick_value && @parent == other.parent
+      end
+
       def to_s
-        "HashPathPick[#{(@path + [@selector]).join(' ')}, value=#{@value}, parent=#{@parent}]"
+        "HashPathPick[selector=#{@selector}, picker=#{@picker}, pick_value=#{@pick_value}, parent=#{@parent}]"
       end
     end
 
     class HashBase < HashPath
+      attr_reader :hash
       def initialize(hash)
         @hash = hash
       end
@@ -206,8 +207,12 @@ module Populate
         return @hash
       end
 
+      def ==(other)
+        other.is_a?(HashBase) && @hash == other.hash
+      end
+
       def to_s
-        "Hash[]"
+        "HashBase[]"
       end
     end
   end

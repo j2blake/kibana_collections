@@ -1,5 +1,5 @@
 #
-# This monkey patch adds a method to Hash that creates a HashPath
+# This monkey patch adds methods to Hash that create a HashPath
 #
 class Hash
   def at(*path)
@@ -8,6 +8,15 @@ class Hash
 
   def pick(selector, picker, pick_value)
     return Populate::HashPath::HashBase.new(self).pick(selector, picker, pick_value)
+  end
+end
+
+#
+# This monkey patch adds a method to Array that creates a HashPath
+#
+class Array
+  def pick(picker, pick_value)
+    return Populate::HashPath::ArrayBase.new(self, picker, pick_value)
   end
 end
 
@@ -22,6 +31,14 @@ module Populate
         return locate_if_present
       end
 
+      #
+      # Walk down the path into nested Hashes, if it exists, and return true.
+      # If the path does not lead to nested Hashes, return false.
+      #
+      def found?
+        return locate_if_present != nil
+      end
+      
       #
       # If the value at this path is an array of hashes, get an array of values at this 
       # selector in each hash.
@@ -212,6 +229,47 @@ module Populate
 
       def to_s
         "HashBase[]"
+      end
+    end
+    
+    class ArrayBase < HashPath
+      attr_reader :array
+      attr_reader :picker
+      attr_reader :pick_value
+      
+      def initialize(array, picker, pick_value)
+        @array = array
+        @picker = picker
+        @pick_value = pick_value
+      end
+
+      def locate_if_present
+        return @array.find do |h|
+          h.is_a?(Hash) && h[@picker] == @pick_value
+        end
+      end
+
+      def locate_or_create
+        found = locate_if_present
+
+        if !found
+          found = {@picker => @pick_value}
+          @array << found
+        end
+
+        return found
+      end
+
+      def root
+        return @array
+      end
+
+      def ==(other)
+        other.is_a?(ArrayBase) && @picker == other.picker && @pick_value == other.pick_value && @array == other.array
+      end
+
+      def to_s
+        "ArrayBase[picker=#{@picker}, pick_value=#{@pick_value}]"
       end
     end
   end

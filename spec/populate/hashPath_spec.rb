@@ -1,22 +1,84 @@
 require_relative '../spec_helper'
 require_relative '../../lib/populate/hashPath'
 
+describe Hash do
+  describe '.at' do
+    it 'produces a HashPathAt on a HashBase' do
+      expect({}.at(:a).to_s).to include('HashPathAt')
+      expect({}.at(:a).to_s).to include('selector=a')
+      expect({}.at(:a).to_s).to include('parent=HashBase')
+    end
+  end
+
+  describe '.pick' do
+    it 'produces a HashPathPick on a HashBase' do
+      expect({}.pick(:a, :p, :pv).to_s).to include('HashPathPick')
+      expect({}.pick(:a, :p, :pv).to_s).to include('selector=a')
+      expect({}.pick(:a, :p, :pv).to_s).to include('picker=p')
+      expect({}.pick(:a, :p, :pv).to_s).to include('pick_value=pv')
+      expect({}.pick(:a, :p, :pv).to_s).to include('parent=HashBase')
+    end
+  end
+end
+
+describe Array do
+  describe '.pick' do
+    it 'produces an ArrayBase' do
+      expect([].pick(:p, :pv).to_s).to include('ArrayBase')
+      expect([].pick(:p, :pv).to_s).to include('picker=p')
+      expect([].pick(:p, :pv).to_s).to include('pick_value=pv')
+    end
+  end
+end
+
+describe Populate::HashPath::ArrayBase do
+  describe '#=' do
+    it 'is equal to another ArrayBase' do
+      expect([].pick(:p, :pv)).to eq([].pick(:p, :pv))
+    end
+  end
+
+  describe '#get' do
+    it 'gets an existing map' do
+      expect([{p2: :pv2}].pick(:p, :pv).get).to be_nil
+    end
+
+    it 'returns nil if the map doesn\'t exist' do
+      expect([{p: :pv}].pick(:p, :pv).get).to eq({p: :pv})
+    end
+  end
+
+  describe '#<<' do
+    it 'creates a new hash when needed' do
+      expect([].pick(:p, :pv).at(:a) << :b).to eq([{p: :pv, a: :b}])
+    end
+
+    it 'adds to an existing hash' do
+      expect([{p: :pv}].pick(:p, :pv).at(:a) << :b).to eq([{p: :pv, a: :b}])
+    end
+
+    it 'ignores a nil value' do
+      expect([].pick(:p, :pv).at(:a) << nil).to eq([])
+    end
+  end
+end
+
 describe Populate::HashPath::HashPath do
   before(:each) do
     @sample = {
       a: 1,
       b: {
-        bb: 2
+      bb: 2
       },
       p: [
-        {
-          pp: 3,
-          pa: 4,
-          pv: 5,
-          pc: {
-            pcc: 6
-          }
-        }
+      {
+      pp: 3,
+      pa: 4,
+      pv: 5,
+      pc: {
+      pcc: 6
+      }
+      }
       ]
     }
     @clone_before = @sample.clone
@@ -126,6 +188,78 @@ describe Populate::HashPath::HashPath do
     end
   end
 
+  describe '#found?' do
+    after(:each) do
+      expect(@sample).to eq(@clone_before)
+    end
+
+    context 'when getting existing values' do
+      it 'finds a top-level value' do
+        expect(@sample.at(:a).found?).to be true
+      end
+
+      it 'finds a second-level value' do
+        expect(@sample.at(:b, :bb).found?).to be true
+      end
+
+      it 'finds a value from a pick' do
+        expect(@sample.at([:p, :pp, 3]).found?).to be true
+      end
+
+      it 'finds a value from beneath a pick' do
+        expect(@sample.at([:p, :pp, 3], :pv).found?).to be true
+      end
+
+      it 'finds a value from well beneath a pick' do
+        expect(@sample.at([:p, :pp, 3], :pc, :pcc).found?).to be true
+      end
+    end
+
+    context 'when values are not found' do
+      it 'no value at top-level' do
+        expect(@sample.at(:z).found?).to be false
+      end
+
+      it 'no value at second-level' do
+        expect(@sample.at(:b, :z).found?).to be false
+      end
+
+      it 'no value from a pick' do
+        expect(@sample.at([:p, :pp, 99]).found?).to be false
+      end
+
+      it 'no value from beneath a pick' do
+        expect(@sample.at([:p, :pp, 3], :z).found?).to be false
+      end
+
+      it 'no value from well beneath a pick' do
+        expect(@sample.at([:p, :pp, 3], :pc, :z).found?).to be false
+      end
+    end
+
+    context 'when structures are not found' do
+      it 'no structure at second-level' do
+        expect(@sample.at(:z, :zz).found?).to be false
+      end
+
+      it 'no structure from a pick' do
+        expect(@sample.at([:p, :z, 99]).found?).to be false
+      end
+
+      it 'no structure beneath a pick' do
+        expect(@sample.at([:p, :pp, 3], :z).found?).to be false
+      end
+
+      it 'no structure from well beneath a pick' do
+        expect(@sample.at([:p, :pp, 3], :z, :zz).found?).to be false
+      end
+
+      it 'no structures for several levels' do
+        expect(@sample.at([:z, :zz, 3], :zzz, :zzzz).found?).to be false
+      end
+    end
+  end
+
   describe '#values' do
     it 'returns an empty result if the value is not an array' do
       expect({a: 3}.at(:a).values(:aa)).to eq([])
@@ -175,6 +309,18 @@ describe Populate::HashPath::HashPath do
       describe 'ignore an actual nil' do
         it_should_behave_like 'it ignores nil values' do
           let(:nil_value) { nil }
+        end
+      end
+
+      describe 'ignore an empty string' do
+        it_should_behave_like 'it ignores nil values' do
+          let(:nil_value) { '' }
+        end
+      end
+
+      describe 'ignore an empty array' do
+        it_should_behave_like 'it ignores nil values' do
+          let(:nil_value) { [] }
         end
       end
 

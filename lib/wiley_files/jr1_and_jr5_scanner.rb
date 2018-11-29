@@ -1,26 +1,33 @@
 require 'pp'
-
 require 'populate/hashPath'
+require 'wiley_files/report/limiting_reporter'
 require 'wiley_files/jr_scanner'
 
 module WileyFiles
   class Jr1AndJr5Scanner
     attr_reader :dirname
+
+    YEAR_TO_YEAR = "Compare %{key1} and %{key2}: start with %{key1_count} DOIs, " \
+      "remove %{key1_only_count}. add %{key2_only_count}, end with %{key2_count} DOIs"
+
+    JR1_TO_JR5 = <<-XXX
+Differences between %{key1} to %{key2}:
+   %{key1_only_count} DOIs only in %{key1} (e.g. %{key1_only_examples}),
+   %{key2_only_count} DOIs only in %{key2} (e.g. %{key2_only_examples}),
+    XXX
     #
     def initialize(dirname)
       @dirname = dirname
 
       @reporter = Report::Reporter.new
-      @reporter.set_template(:year_to_year_differences,
-      "Compare %{key1} and %{key2}: start with %{key1_count} DOIs, remove %{key1_only_count}. add %{key2_only_count}, end with %{key2_count} DOIs")
-      @reporter.set_template(:jr1_to_jr5_differences,
-      "Differences between %{key1} to %{key2}: \n   %{key1_only_count} DOIs only in %{key1} (e.g. %{key1_only_examples}), \n   %{key2_only_count} DOIs only in %{key2} (e.g. %{key2_only_examples}),")
+      @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
+      @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
       @reporter.set_template(:different_values_for_doi, "Different '%{key}' values for %{doi}, \n%{values_map}")
     end
 
     def scan_and_merge(filename)
       filepath = File.expand_path(filename + ".csv", @dirname)
-      scanned = JrScanner.new(filepath, @reporter).read.compile.scan
+      scanned = JrScanner.new(filepath, @reporter).scan
       scanned.each do |row|
         @merged_by_doi.at(row["doi"], filename) << row
       end
@@ -42,20 +49,23 @@ module WileyFiles
         key1_count: key1_values.size,
         key2_count: key2_values.size,
         key1_only_count: key1_only.size,
-        key1_only_examples: key1_only.take(5),
+        key1_only_examples: key1_only.take(5).pretty_inspect,
         key2_only_count: key2_only.size,
-        key2_only_examples: key2_only.take(5)
+        key2_only_examples: key2_only.take(5).pretty_inspect
       }
       @reporter.report(template, summary)
+      @reporter.report(' ')
     end
 
     def compare_values_for_doi(key)
+      reporter = Report::LimitingReporter.new(@reporter, 5)
       @merged_by_doi.each do |doi, data|
         reduced_map = data.transform_values {|v| v[key]}
         if reduced_map.values.any? {|t| t != reduced_map.values[0]}
-          @reporter.report(:different_values_for_doi, key: key, doi: doi, values_map: reduced_map.pretty_inspect)
+          reporter.report(:different_values_for_doi, key: key, doi: doi, values_map: reduced_map.pretty_inspect)
         end
       end
+      reporter.close
     end
 
     def run
@@ -75,9 +85,6 @@ module WileyFiles
       compare_values_for_doi("proprietary_id")
       compare_values_for_doi("print_issn")
       compare_values_for_doi("online_issn")
-      #
-      #      
-      #
       #      puts "BOGUS combined"
       #      pp @merged_by_doi
     end

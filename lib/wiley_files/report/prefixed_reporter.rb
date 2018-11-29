@@ -8,7 +8,11 @@ module WileyFiles
       end
       
       def report(template, values={})
-        super(@prefix + template, values)
+        @wrapped.report(@prefix + lookup(template), values)
+      end
+      
+      def close
+        @wrapped.close
       end
     end
   end

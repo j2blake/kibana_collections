@@ -15,7 +15,7 @@ module WileyFiles
         CSV.parse(string, options) do |row|
           row_hash = {}
           row.each do |key, value|
-            row_hash[key] = value
+            row_hash[key] = value.is_a?(String) ? value.strip : value
           end
           array << row_hash
         end

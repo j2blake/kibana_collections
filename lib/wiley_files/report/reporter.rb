@@ -17,6 +17,10 @@ module WileyFiles
       def report(template, values = {})
         puts lookup(template) % values
       end
+      
+      def close
+        puts
+      end
     end
   end
 end

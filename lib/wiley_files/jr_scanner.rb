@@ -4,7 +4,15 @@ module WileyFiles
   class JrScanner
     def initialize(filename, reporter)
       @filename = filename
-      @reporter = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
+
+      prefixed = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
+      prefixed.set_template(:missing_values, "Missing value for %{missing} in %{row}")
+      @reporter = Report::LimitingReporter.new(prefixed, 5)
+
+      read
+      compile
+      
+      @reporter.close
     end
 
     def read
@@ -37,10 +45,11 @@ module WileyFiles
         new_row = new_row.at("proprietary_id") << row.at("Proprietary Identifier")
         new_row = new_row.at("print_issn") << row.at("Print ISSN")
         new_row = new_row.at("online_issn") << row.at("Online ISSN")
-        
+
         expected_keys = ["doi", "journal", "proprietary_id", "print_issn", "online_issn"]
-        @reporter.report(:missing_values, expected: expected_keys, row: new_row) unless (expected_keys - new_row.keys).empty?
-        
+        missing_keys = expected_keys - new_row.keys
+        @reporter.report(:missing_values, expected: expected_keys, missing: missing_keys, row: new_row) unless missing_keys.empty?
+
         @compiled << new_row
       end
       @reporter.report("Compile completed.")
@@ -48,7 +57,6 @@ module WileyFiles
     end
 
     def scan
-      @reporter.report("Scan completed.")
       return @compiled
     end
   end

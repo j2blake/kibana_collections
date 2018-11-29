@@ -2,6 +2,8 @@ require 'pp'
 require 'populate/hashPath'
 require 'wiley_files/report/limiting_reporter'
 require 'wiley_files/jr_scanner'
+require 'wiley_files/jr1_scanner'
+require 'wiley_files/jr5_scanner'
 
 module WileyFiles
   class Jr1AndJr5Scanner
@@ -19,18 +21,32 @@ Differences between %{key1} to %{key2}:
     def initialize(dirname)
       @dirname = dirname
 
+      @records = []
+
       @reporter = Report::Reporter.new
       @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
       @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
       @reporter.set_template(:different_values_for_doi, "Different '%{key}' values for %{doi}, \n%{values_map}")
     end
 
-    def scan_and_merge(filename)
-      filepath = File.expand_path(filename + ".csv", @dirname)
-      scanned = JrScanner.new(filepath, @reporter).scan
-      scanned.each do |row|
+    def scan_and_merge_jr1(filename)
+      scanner = Jr1Scanner.new(filepath(filename), @reporter)
+      scanner.scan.each do |row|
         @merged_by_doi.at(row["doi"], filename) << row
       end
+      @records += scanner.flatten
+    end
+
+    def scan_and_merge_jr5(filename)
+      scanner = Jr5Scanner.new(filepath(filename), @reporter)
+      scanner.scan.each do |row|
+        @merged_by_doi.at(row["doi"], filename) << row
+      end
+      @records += scanner.flatten
+    end
+
+    def filepath(filename)
+      File.expand_path(filename + ".csv", @dirname)
     end
 
     def check_for_differences(template, key1, key2)
@@ -70,12 +86,12 @@ Differences between %{key1} to %{key2}:
 
     def run
       @merged_by_doi = {}
-      scan_and_merge("JR1_2016")
-      scan_and_merge("JR1_2017")
-      scan_and_merge("JR1_2018")
-      scan_and_merge("JR5_2016")
-      scan_and_merge("JR5_2017")
-      scan_and_merge("JR5_2018")
+      scan_and_merge_jr1("JR1_2016")
+      scan_and_merge_jr1("JR1_2017")
+      scan_and_merge_jr1("JR1_2018")
+      scan_and_merge_jr5("JR5_2016")
+      scan_and_merge_jr5("JR5_2017")
+      scan_and_merge_jr5("JR5_2018")
       check_for_differences(:jr1_to_jr5_differences, "JR1_2016", "JR5_2016")
       check_for_differences(:jr1_to_jr5_differences, "JR1_2017", "JR5_2017")
       check_for_differences(:jr1_to_jr5_differences, "JR1_2018", "JR5_2018")

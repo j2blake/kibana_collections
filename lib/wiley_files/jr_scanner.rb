@@ -1,5 +1,3 @@
-require 'populate/hashPath'
-
 module WileyFiles
   class JrScanner
     def initialize(filename, reporter)

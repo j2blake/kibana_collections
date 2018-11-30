@@ -26,7 +26,7 @@ module WileyFiles
 
     def to_date(key)
       begin
-        return Date.strptime(key, "%b-%y")
+        return Date.strptime(key, "%b-%y").strftime("%Y-%m")
       rescue
         return nil
       end
@@ -44,11 +44,11 @@ module WileyFiles
         basic_keys = journal.keys - ["by_month", "summary"]
         basic_info = journal.clone.keep_if {|key| basic_keys.include?(key)}
 
-        year = journal["by_month"].keys.first
-        @records << journal["summary"].merge(basic_info).merge({"year" => year.strftime("%Y"), "stamp" => year.strftime("%Y-01 -0500")})
+        year = journal["by_month"].keys.first.slice(0..3)
+        @records << journal["summary"].merge(basic_info).merge({"year" => year, "stamp" => "#{year}-01 -0500"})
 
         journal["by_month"].each do |month, count|
-          @records << {"month" => month.strftime("%Y-%m"), "stamp" => month.strftime("%Y-%m -0500"), "count" => count}.merge(basic_info)
+          @records << {"month" => month, "stamp" => "#{month} -0500", "count" => count}.merge(basic_info)
         end
       end
       return @records

@@ -27,29 +27,41 @@ Differences between %{key1} to %{key2}:
       @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
       @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
       @reporter.set_template(:different_values_for_doi, "Different '%{key}' values for %{doi}, \n%{values_map}")
+      @reporter.set_template(:multiple_dois_for_proprietary_id, "Proprietary ID '%{id}' maps to more than one DOI: %{map}")
     end
 
-    def scan_and_merge_jr1(filename)
-      scanner = Jr1Scanner.new(filepath(filename), @reporter)
-      scanner.scan.each do |row|
-        @merged_by_doi.at(row["doi"], filename) << row
+    def create_scanners
+      @scanners = {}
+      @scanners["JR1_2016"] = Jr1Scanner.new(filepath("JR1_2016"), @reporter)
+      @scanners["JR1_2017"] = Jr1Scanner.new(filepath("JR1_2017"), @reporter)
+      @scanners["JR1_2018"] = Jr1Scanner.new(filepath("JR1_2018"), @reporter)
+      @scanners["JR5_2016"] = Jr5Scanner.new(filepath("JR5_2016"), @reporter)
+      @scanners["JR5_2017"] = Jr5Scanner.new(filepath("JR5_2017"), @reporter)
+      @scanners["JR5_2018"] = Jr5Scanner.new(filepath("JR5_2018"), @reporter)
+    end
+
+    def merge_by_doi
+      @merged_by_doi = {}
+      @scanners.each do |filename, scanner|
+        scanner.scan.each do |row|
+          @merged_by_doi.at(row["doi"], filename) << row
+        end
       end
-      @records += scanner.flatten
     end
 
-    def scan_and_merge_jr5(filename)
-      scanner = Jr5Scanner.new(filepath(filename), @reporter)
-      scanner.scan.each do |row|
-        @merged_by_doi.at(row["doi"], filename) << row
-      end
-      @records += scanner.flatten
+    def analyze_by_doi
+      compare_doi_lists(:jr1_to_jr5_differences, "JR1_2016", "JR5_2016")
+      compare_doi_lists(:jr1_to_jr5_differences, "JR1_2017", "JR5_2017")
+      compare_doi_lists(:jr1_to_jr5_differences, "JR1_2018", "JR5_2018")
+      compare_doi_lists(:year_to_year_differences, "JR1_2016", "JR1_2017")
+      compare_doi_lists(:year_to_year_differences, "JR1_2017", "JR1_2018")
+      compare_values_for_doi("journal")
+      compare_values_for_doi("proprietary_id")
+      compare_values_for_doi("print_issn")
+      compare_values_for_doi("online_issn")
     end
 
-    def filepath(filename)
-      File.expand_path(filename + ".csv", @dirname)
-    end
-
-    def check_for_differences(template, key1, key2)
+    def compare_doi_lists(template, key1, key2)
       key1_values = []
       key2_values = []
       @merged_by_doi.each do |doi, value|
@@ -84,23 +96,61 @@ Differences between %{key1} to %{key2}:
       reporter.close
     end
 
+    def merge_by_proprietary_id
+      @merged_by_proprietary_id = {}
+      @scanners.each do |filename, scanner|
+        scanner.scan.each do |row|
+          puts "ROW: #{row.pretty_inspect}"
+          id = row["proprietary_id"] || "__NONE__"
+          @merged_by_proprietary_id.at(id, filename) << row
+        end
+      end
+    end
+
+    def analyze_by_proprietary_id
+      check_many_proprietary_ids_to_how_many_dois
+    end
+
+    def check_many_proprietary_ids_to_how_many_dois
+      reporter = Report::LimitingReporter.new(@reporter, 5)
+      @merged_by_proprietary_id.each do |proprietary_id, data|
+        # for each ID, a map of filenames to either a record or an array of data records.
+        # convert it to a map of filenames to an array of dois
+        reduced_map = data.transform_values {|v| dois_from_data(v)}
+        dois = reduced_map.values.flatten.uniq
+        if dois.size > 1
+          reporter.report(:multiple_dois_for_proprietary_id, id: proprietary_id, dois: dois, map: reduced_map.pretty_inspect)
+        end
+      end
+      reporter.close
+    end
+
+    def dois_from_data(data)
+      if data.is_a?(Array)
+        data.map {|d| d["doi"]}
+      else
+        [data["doi"]]
+      end
+    end
+
+    def generate_records
+      @scanners.each do |filename, scanner|
+        @records += scanner.flatten
+      end
+    end
+
+    def filepath(filename)
+      File.expand_path(filename + ".csv", @dirname)
+    end
+
     def run
-      @merged_by_doi = {}
-      scan_and_merge_jr1("JR1_2016")
-      scan_and_merge_jr1("JR1_2017")
-      scan_and_merge_jr1("JR1_2018")
-      scan_and_merge_jr5("JR5_2016")
-      scan_and_merge_jr5("JR5_2017")
-      scan_and_merge_jr5("JR5_2018")
-      check_for_differences(:jr1_to_jr5_differences, "JR1_2016", "JR5_2016")
-      check_for_differences(:jr1_to_jr5_differences, "JR1_2017", "JR5_2017")
-      check_for_differences(:jr1_to_jr5_differences, "JR1_2018", "JR5_2018")
-      check_for_differences(:year_to_year_differences, "JR1_2016", "JR1_2017")
-      check_for_differences(:year_to_year_differences, "JR1_2017", "JR1_2018")
-      compare_values_for_doi("journal")
-      compare_values_for_doi("proprietary_id")
-      compare_values_for_doi("print_issn")
-      compare_values_for_doi("online_issn")
+      create_scanners
+      merge_by_doi
+      analyze_by_doi
+      merge_by_proprietary_id
+      analyze_by_proprietary_id
+      generate_records
+
       #      puts "BOGUS combined"
       #      pp @merged_by_doi
     end

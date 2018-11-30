@@ -38,20 +38,20 @@ module Populate
       def found?
         return locate_if_present != nil
       end
-      
+
       #
-      # If the value at this path is an array of hashes, get an array of values at this 
+      # If the value at this path is an array of hashes, get an array of values at this
       # selector in each hash.
       #
       # If not an array, return nil.
-      # 
-      # If the array contains values that are not hashes, or that do not contain the 
+      #
+      # If the array contains values that are not hashes, or that do not contain the
       # selector as a key, do not include them in the result
       #
       def values(selector)
         array = self.get
         return [] unless array.is_a?(Array)
-        array_of_hashes = array.select {|h| h.is_a?(Hash)} 
+        array_of_hashes = array.select {|h| h.is_a?(Hash)}
         array_of_values = array_of_hashes.map {|h| h.at(selector).get}
         return array_of_values.reject {|v| v == nil}
       end
@@ -84,8 +84,10 @@ module Populate
       def append_value(value)
         here = @parent.locate_or_create
         existing = here[@selector]
-        if existing
-          here[@selector] = [*existing] + [*value]
+        if existing.is_a?(Array)
+          here[@selector] = existing << value
+        elsif existing
+          here[@selector] = [existing, value]
         else
           here[@selector] = value
         end
@@ -231,12 +233,11 @@ module Populate
         "HashBase[]"
       end
     end
-    
+
     class ArrayBase < HashPath
       attr_reader :array
       attr_reader :picker
       attr_reader :pick_value
-      
       def initialize(array, picker, pick_value)
         @array = array
         @picker = picker

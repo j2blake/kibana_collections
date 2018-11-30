@@ -355,6 +355,24 @@ describe Populate::HashPath::HashPath do
         expected = {p: [{pp: 3, pv: {a: [1, 2]}}]}
         expect(actual).to eq(expected)
       end
+
+      it 'joins two scalars into an array' do
+        actual = {a: 1}.at(:a) << 2
+        expected = {a: [1, 2]}
+        expect(actual).to eq(expected)
+      end
+
+      it 'appends a scalar to the end of an array' do
+        actual = {a: [1, 2]}.at(:a) << 3
+        expected = {a: [1, 2, 3]}
+        expect(actual).to eq(expected)
+      end
+
+      it 'joins two maps into an array of maps' do
+        actual = {a: {b: 1}}.at(:a) << {b: 2}
+        expected = {a: [{b: 1}, {b: 2}]}
+        expect(actual).to eq(expected)
+      end
     end
 
     context 'when adding to existing structures' do

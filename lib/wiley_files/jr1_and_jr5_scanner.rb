@@ -100,7 +100,6 @@ Differences between %{key1} to %{key2}:
       @merged_by_proprietary_id = {}
       @scanners.each do |filename, scanner|
         scanner.scan.each do |row|
-          puts "ROW: #{row.pretty_inspect}"
           id = row["proprietary_id"] || "__NONE__"
           @merged_by_proprietary_id.at(id, filename) << row
         end
@@ -108,31 +107,26 @@ Differences between %{key1} to %{key2}:
     end
 
     def analyze_by_proprietary_id
-      check_many_proprietary_ids_to_how_many_dois
+      map_proprietary_ids_to_lists_of_dois
     end
 
-    def check_many_proprietary_ids_to_how_many_dois
+    def map_proprietary_ids_to_lists_of_dois
       reporter = Report::LimitingReporter.new(@reporter, 5)
-      @merged_by_proprietary_id.each do |proprietary_id, data|
-        # for each ID, a map of filenames to either a record or an array of data records.
-        # convert it to a map of filenames to an array of dois
-        reduced_map = data.transform_values {|v| dois_from_data(v)}
-        dois = reduced_map.values.flatten.uniq
-        if dois.size > 1
-          reporter.report(:multiple_dois_for_proprietary_id, id: proprietary_id, dois: dois, map: reduced_map.pretty_inspect)
+      @proprietary_ids_to_dois = {}
+      @scanners.each do |filename, scanner|
+        scanner.scan.each do |row|
+          @proprietary_ids_to_dois.at(row["proprietary_id"], row["doi"]) << filename
+        end
+      end
+
+      @proprietary_ids_to_dois.each do |proprietary_id, doi_map|
+        if doi_map.size > 1
+          reporter.report(:multiple_dois_for_proprietary_id, id: proprietary_id, map: doi_map.pretty_inspect)
         end
       end
       reporter.close
     end
-
-    def dois_from_data(data)
-      if data.is_a?(Array)
-        data.map {|d| d["doi"]}
-      else
-        [data["doi"]]
-      end
-    end
-
+    
     def generate_records
       @scanners.each do |filename, scanner|
         @records += scanner.flatten

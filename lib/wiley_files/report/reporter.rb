@@ -8,6 +8,12 @@ module WileyFiles
       def set_template(key, template_string)
         @template_map[key] = template_string
       end
+      
+      def limit(limit)
+        limited = Report::LimitingReporter.new(self, limit)
+        yield limited if block_given?
+        limited.close
+      end
 
       def lookup(template)
         template_string = @template_map[template]

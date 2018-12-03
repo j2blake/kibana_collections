@@ -5,12 +5,11 @@ module WileyFiles
 
       prefixed = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
       prefixed.set_template(:missing_values, "Missing value for %{missing} in %{row}")
-      @reporter = Report::LimitingReporter.new(prefixed, 5)
-
-      read
-      compile
-      
-      @reporter.close
+      prefixed.limit(5) do |reporter|
+        @reporter = reporter
+        read
+        compile
+      end
     end
 
     def read

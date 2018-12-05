@@ -1,13 +1,7 @@
-require 'pp'
-require 'populate/hashPath'
-require 'wiley_files/report/limiting_reporter'
-require 'wiley_files/jr_scanner'
-require 'wiley_files/jr1_scanner'
-require 'wiley_files/jr5_scanner'
-
 module WileyFiles
-  class Jr1AndJr5Scanner
+  class AnalyzeJr1AndJr5
     attr_reader :dirname
+    attr_reader :merged_by_doi
 
     YEAR_TO_YEAR = "Compare %{key1} and %{key2}: start with %{key1_count} DOIs, " \
       "remove %{key1_only_count}. add %{key2_only_count}, end with %{key2_count} DOIs"
@@ -18,25 +12,12 @@ Differences between %{key1} to %{key2}:
    %{key2_only_count} DOIs only in %{key2} (e.g. %{key2_only_examples}),
     XXX
     #
-    def initialize(dirname)
-      @dirname = dirname
-
-      @records = []
-
-      @reporter = Report::Reporter.new
+    def initialize(scanners, reporter)
+      @scanners = scanners
+      @reporter = reporter
       @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
       @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
       @reporter.set_template(:different_associations_by_file, "%{key1} '%{value1}' maps to more than one %{key2} \n%{values_map}")
-    end
-
-    def create_scanners
-      @scanners = {}
-      @scanners["JR1_2016"] = Jr1Scanner.new(filepath("JR1_2016"), @reporter)
-      @scanners["JR1_2017"] = Jr1Scanner.new(filepath("JR1_2017"), @reporter)
-      @scanners["JR1_2018"] = Jr1Scanner.new(filepath("JR1_2018"), @reporter)
-      @scanners["JR5_2016"] = Jr5Scanner.new(filepath("JR5_2016"), @reporter)
-      @scanners["JR5_2017"] = Jr5Scanner.new(filepath("JR5_2017"), @reporter)
-      @scanners["JR5_2018"] = Jr5Scanner.new(filepath("JR5_2018"), @reporter)
     end
 
     def analyze_by_doi
@@ -106,24 +87,9 @@ Differences between %{key1} to %{key2}:
       compare_associations_by_file("proprietary_id", "doi", 5)
     end
 
-    def generate_records
-      @scanners.each do |filename, scanner|
-        @records += scanner.flatten
-      end
-    end
-
-    def filepath(filename)
-      File.expand_path(filename + ".csv", @dirname)
-    end
-
     def run
-      create_scanners
       analyze_by_doi
       analyze_by_proprietary_id
-      generate_records
-
-      #      puts "BOGUS combined"
-      #      pp @merged_by_doi
     end
   end
 end

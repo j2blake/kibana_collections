@@ -10,19 +10,21 @@ module WileyFiles
     end
 
     def create_scanners
-      @scanners = {}
-      @scanners["PriceListE"] = Scan::PriceListEScanner.new(filepath("PriceListE"), @reporter)
+      @reporter.mute do |reporter|
+        @scanners = {}
+        @scanners["PriceListE"] = Scan::PriceListEScanner.new(filepath("PriceListE"), reporter)
 
-      @scanners["JR1_2016"] = Scan::Jr1Scanner.new(filepath("JR1_2016"), @reporter)
-      @scanners["JR1_2017"] = Scan::Jr1Scanner.new(filepath("JR1_2017"), @reporter)
-      @scanners["JR1_2018"] = Scan::Jr1Scanner.new(filepath("JR1_2018"), @reporter)
+        @scanners["JR1_2016"] = Scan::Jr1Scanner.new(filepath("JR1_2016"), reporter)
+        @scanners["JR1_2017"] = Scan::Jr1Scanner.new(filepath("JR1_2017"), reporter)
+        @scanners["JR1_2018"] = Scan::Jr1Scanner.new(filepath("JR1_2018"), reporter)
 
-      @scanners["JR5_2016"] = Scan::Jr5Scanner.new(filepath("JR5_2016"), @reporter)
-      @scanners["JR5_2017"] = Scan::Jr5Scanner.new(filepath("JR5_2017"), @reporter)
-      @scanners["JR5_2018"] = Scan::Jr5Scanner.new(filepath("JR5_2018"), @reporter)
+        @scanners["JR5_2016"] = Scan::Jr5Scanner.new(filepath("JR5_2016"), reporter)
+        @scanners["JR5_2017"] = Scan::Jr5Scanner.new(filepath("JR5_2017"), reporter)
+        @scanners["JR5_2018"] = Scan::Jr5Scanner.new(filepath("JR5_2018"), reporter)
 
-      @jr1_scanners = @scanners.select { |filename, scanner| filename.start_with?("JR1") }
-      @jr5_scanners = @scanners.select { |filename, scanner| filename.start_with?("JR5") }
+        @jr1_scanners = @scanners.select { |filename, scanner| filename.start_with?("JR1") }
+        @jr5_scanners = @scanners.select { |filename, scanner| filename.start_with?("JR5") }
+      end
     end
 
     def filepath(filename)
@@ -38,21 +40,21 @@ module WileyFiles
     def merge_prices_by_doi
       merged_by_doi = {}
       @jr5_scanners.each do |filename, scanner|
-#        puts "\nBOGUS row"
-#        pp scanner.scan.take(1)
+        #        puts "\nBOGUS row"
+        #        pp scanner.scan.take(1)
         scanner.scan.each do |row|
           merged_by_doi.at(row["doi"], "proprietary_id", row.at("proprietary_id").get) << filename
           merged_by_doi.at(row["doi"], "total_usage", row.at("total_usage").get) << filename
         end
       end
-#      puts "\nBOGUS merged"
-#      pp merged_by_doi.first(1)
+      #      puts "\nBOGUS merged"
+      #      pp merged_by_doi.first(1)
 
       price_list = @scanners["PriceListE"].scan
-#      puts "\nBOGUS price_list"
-#      pp price_list.first(5)
+      #      puts "\nBOGUS price_list"
+      #      pp price_list.first(5)
 
-      @reporter.limit(50) do |reporter|
+      @reporter.limit(10) do |reporter|
         merged_by_doi.each do |doi, values|
           propIds = values["proprietary_id"].keys
           propIds.each do |propId|

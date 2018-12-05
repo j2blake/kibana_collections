@@ -14,14 +14,25 @@ module WileyFiles
         yield limited if block_given?
         limited.close
       end
-
-      def lookup(template)
-        template_string = @template_map[template]
-        return template_string || template.to_s
+      
+      def mute
+        yield Report::MuteReporter.new if block_given?
+      end
+      
+      def noop
+        yield self if block_given?
       end
 
+      def lookup(template)
+        @template_map[template] || template.to_s
+      end
+
+      def stamp
+        Time.now.strftime("%I:%M:%S.%L")
+      end
+      
       def report(template, values = {})
-        puts lookup(template) % values
+        puts "#{stamp} #{lookup(template) % values}"
       end
       
       def close

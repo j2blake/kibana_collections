@@ -1,11 +1,22 @@
 module WileyFiles
   module Scan
     class JrScanner
+      MISSING_VALUE = "Missing value for '%{key}\n    %{new_row}'"
+      DUPLICATE_VALUE = "Duplicate value for '%{key}\n    %{new_row}\n    %{old_row}'"
+      #
       def initialize(filename, reporter)
         @filename = filename
 
         prefixed = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
-        prefixed.set_template(:missing_values, "Missing value for %{missing} in %{row}")
+        prefixed.set_template(:missing_doi, MISSING_VALUE)
+        prefixed.set_template(:missing_propId, MISSING_VALUE)
+        prefixed.set_template(:missing_printISSN, MISSING_VALUE)
+        prefixed.set_template(:missing_onlineISSN, MISSING_VALUE)
+        prefixed.set_template(:duplicate_doi, DUPLICATE_VALUE)
+        prefixed.set_template(:duplicate_propId, DUPLICATE_VALUE)
+        prefixed.set_template(:duplicate_printISSN, DUPLICATE_VALUE)
+        prefixed.set_template(:duplicate_onlineISSN, DUPLICATE_VALUE)
+
         prefixed.limit(5) do |reporter|
           @reporter = reporter
           read
@@ -19,53 +30,74 @@ module WileyFiles
       end
 
       #
-      # produce an array of hashes like this:
+      # produce a hash of hashes like this:
       # {
-      #   "doi"=>"10.1002/(ISSN)1536-0709a", 
-      #   "journal"=>"AAHE-ERIC/Higher Education Research Report", 
-      #   "proprietary_id"=>"AEHE", 
-      #   "print_issn"=>"0737-1764", 
-      #   "online_issn"=>"1536-0709"
+      #   "10.1002/(ISSN)1536-0709a"=>{
+      #     "doi"=>"10.1002/(ISSN)1536-0709a",
+      #     "journal"=>"AAHE-ERIC/Higher Education Research Report",
+      #     "proprietary_id"=>"AEHE",
+      #     "print_issn"=>"0737-1764",
+      #     "online_issn"=>"1536-0709"
+      #   }
       # }
       #
       def compile
-        @compiled = []
-        @contents.each do |row|
-          # is the DOI a duplicate?
-          target_row = @compiled.pick("doi", row["Journal DOI"])
-          @reporter.report(:duplicate_doi, source: row, target: target_row.get) if (target_row.found?)
+        @by_doi = {}
+        @by_proprietary_id = {}
+        @by_print_issn = {}
+        @by_online_issn = {}
 
-          # is the Proprietary Identifier a duplicate?
-          target_row = @compiled.pick("propId", row["Proprietary Identifier"])
-          @reporter.report(:duplicate_propId, source: row, target: target_row.get) if (target_row.found?)
+        @contents.each do |raw_row|
+          @new_row = convert_row(raw_row)
+          next unless has_doi?
+          add_without_duplicating(@by_doi, "doi", :duplicate_doi, :missing_doi)
+          add_without_duplicating(@by_proprietary_id, "proprietary_id", :duplicate_propId, :missing_propId)
+          add_without_duplicating(@by_print_issn, "print_issn", :duplicate_printISSN, :missing_printISSN)
+          add_without_duplicating(@by_online_issn, "online_issn", :duplicate_onlineISSN, :missing_onlineISSN)
 
-          # is the Print ISSN a duplicate?
-          target_row = @compiled.pick("propId", row["Print ISSN"])
-          @reporter.report(:duplicate_printISSN, source: row, target: target_row.get) if (target_row.found?)
-
-          # is the Online ISSN a duplicate?
-          target_row = @compiled.pick("propId", row["Online ISSN"])
-          @reporter.report(:duplicate_printISSN, source: row, target: target_row.get) if (target_row.found?)
-
-          new_row = {}
-          new_row = new_row.at("doi") << row.at("Journal DOI")
-          new_row = new_row.at("journal") << row.at("Journal")
-          new_row = new_row.at("proprietary_id") << row.at("Proprietary Identifier")
-          new_row = new_row.at("print_issn") << row.at("Print ISSN")
-          new_row = new_row.at("online_issn") << row.at("Online ISSN")
-
-          expected_keys = ["doi", "journal", "proprietary_id", "print_issn", "online_issn"]
-          missing_keys = expected_keys - new_row.keys
-          @reporter.report(:missing_values, expected: expected_keys, missing: missing_keys, row: new_row) unless missing_keys.empty?
-
-          @compiled << new_row
+          add_more_values_by_doi(raw_row)
         end
-        @reporter.report("Compile completed.")
-        return self
+      end
+
+      def convert_row(raw_row)
+        row = {}
+        row.at("doi") << raw_row.at("Journal DOI")
+        row.at("journal") << raw_row.at("Journal")
+        row.at("proprietary_id") << raw_row.at("Proprietary Identifier")
+        row.at("print_issn") << raw_row.at("Print ISSN")
+        row.at("online_issn") << raw_row.at("Online ISSN")
+      end
+
+      def has_doi?
+        @new_row["doi"]
+      end
+
+      def add_without_duplicating(hash, key, message_duplicate, message_missing)
+        value = @new_row[key]
+        if value
+          old_row = hash[value]
+          if old_row
+            @reporter.report(message_duplicate, key: key, new_row: trim_for_display(@new_row, key), old_row: trim_for_display(old_row, key))
+          else
+            hash[value] = @new_row
+          end
+        else
+          @reporter.report(message_missing, key: key, new_row: trim_for_display(@new_row, key))
+        end
+      end
+
+      def trim_for_display(row, key)
+        row.select do |k, v|
+          ["doi", "journal", key].include?(k)
+        end
+      end
+
+      def add_more_values_by_doi(raw_row)
+        # subclasses should implement this
       end
 
       def scan
-        return @compiled
+        @by_doi.values
       end
     end
   end

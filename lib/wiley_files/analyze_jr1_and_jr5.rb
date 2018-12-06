@@ -1,7 +1,5 @@
 module WileyFiles
   class AnalyzeJr1AndJr5
-    attr_reader :dirname
-    attr_reader :merged_by_doi
 
     YEAR_TO_YEAR = "Compare %{key1} and %{key2}: start with %{key1_count} DOIs, " \
       "remove %{key1_only_count}. add %{key2_only_count}, end with %{key2_count} DOIs"
@@ -14,7 +12,7 @@ Differences between %{key1} to %{key2}:
     #
     def initialize(scanners, reporter)
       @scanners = scanners
-      @reporter = reporter
+      @reporter = Report::PrefixedReporter.new(reporter, "AnalyzeJr1AndJr5")
       @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
       @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
       @reporter.set_template(:different_associations_by_file, "%{key1} '%{value1}' maps to more than one %{key2} \n%{values_map}")
@@ -37,8 +35,8 @@ Differences between %{key1} to %{key2}:
     def merge_by_doi
       @merged_by_doi = {}
       @scanners.each do |filename, scanner|
-        scanner.scan.each do |row|
-          @merged_by_doi.at(row["doi"], filename) << row
+        scanner.scan_hash.each do |doi, data|
+          @merged_by_doi.at(doi, filename) << data
         end
       end
     end
@@ -87,7 +85,7 @@ Differences between %{key1} to %{key2}:
       compare_associations_by_file("proprietary_id", "doi", 5)
     end
 
-    def run
+    def analyze
       analyze_by_doi
       analyze_by_proprietary_id
     end

@@ -32,11 +32,17 @@ module WileyFiles
       File.expand_path(filename + ".csv", @dirname)
     end
 
-    def generate_records
-      @scanners.each do |filename, scanner|
-        @records += scanner.flatten
-      end
+    def analyze_jr1_and_jr5s
+      AnalyzeJr1AndJr5.new(@jr1_scanners.merge(@jr5_scanners), @reporter).analyze
     end
+    
+    # REMOVE FLATTENERS
+    #    def generate_records
+    #      @scanners.each do |filename, scanner|
+    #        @records += scanner.flatten
+    #      end
+    #    end
+    #
 
     def merge_prices_by_doi
       merged_by_doi = {}
@@ -82,7 +88,7 @@ module WileyFiles
         self.select(keys.sort.take(how_many))
       end
     end
-    
+
     def output_elasticsearch_records
       merged = Merger.new(@reporter).merge(@jr1_scanners, @jr5_scanners, @scanners["PriceListE"])
       curried = Currier.new(@reporter).curry(merged)
@@ -92,6 +98,7 @@ module WileyFiles
 
     def run
       create_scanners
+      analyze_jr1_and_jr5s
       merge_prices_by_doi
       output_elasticsearch_records
       #      AnalyzeJr1AndJr5.new(@scanners, @reporter).new.run

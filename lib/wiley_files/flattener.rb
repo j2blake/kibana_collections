@@ -76,10 +76,10 @@ Price is the smallest of the available prices (or remove multiple prices?)
 
 Elasticsearch records should look like this:
 
-doi, journal, proprietary_id, print_issn, online_issn, usage_month, usage_month_stamp, usage_count
+doi, journal, proprietary_id, print_issn, online_issn, usage_month, usage_month_stamp, month_usage_count
   one for each doi / usage_month combination
 
-doi, journal, proprietary_id, print_issn, online_issn, usage_year, usage_year_stamp, year_of_publication, year_of_publication_stamp
+doi, journal, proprietary_id, print_issn, online_issn, usage_year, usage_year_stamp, year_of_publication, year_of_publication_stamp, pubyear_usage_count
   one for each doi / usage_year / year_of_publication combination
 
 doi, journal, proprietary_id, print_issn, online_issn, total_usage_by_month, total_usage_by_year_of_publication, price
@@ -98,16 +98,15 @@ module WileyFiles
       @records = []
       curried.each do |doi, data|
         @records << create_summary_record(doi, data)
-        data["by_month"].to_a.each do |by_month|
-          @records << create_by_month_record(doi, data, by_month)
+        data["by_month"].to_h.each do |month, count|
+          @records << create_by_month_record(doi, data, month, count)
         end
-        data["by_year_of_publication"].to_a.each do |by_year_of_publication|
-          @records << create_by_year_of_publication_record(doi, data, by_year_of_publication)
+        data["by_year_of_publication"].to_h.each do |request_year, requests|
+          requests.to_h.each do |publish_year, count|
+          @records << create_by_year_of_publication_record(doi, data, request_year, publish_year, count)
+          end
         end
       end
-
-      @reporter.report("BOGUS flatten")
-      pp @records.take(50)
     end
 
     def create_summary_record(doi, data)
@@ -123,21 +122,32 @@ module WileyFiles
       return record
     end
 
-    def create_by_month_record(doi, data, by_month)
+    def create_by_month_record(doi, data, month, count)
       record = {}
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
       record.at("proprietary_id") << data.at("proprietary_id")
       record.at("print_issn") << data.at("print_issn")
       record.at("online_issn") << data.at("online_issn")
-      record.at("usage_month") << by_month[0]
-      record.at("usage_month_stamp") << by_month[0]
-      record.at("usage_count") << by_month[1]
+      record.at("usage_month") << month
+      record.at("usage_month_stamp") << month 
+      record.at("month_usage_count") << count
       return record
     end
 
-    def create_by_year_of_publication_record(doi, data, by_year_of_publication)
-      return "bogus by_year_of_publication record"
+    def create_by_year_of_publication_record(doi, data, request_year, publish_year, count)
+      record = {}
+      record.at("doi") << doi
+      record.at("journal") << data.at("journal")
+      record.at("proprietary_id") << data.at("proprietary_id")
+      record.at("print_issn") << data.at("print_issn")
+      record.at("online_issn") << data.at("online_issn")
+      record.at("usage_year") << request_year
+      record.at("usage_year_stamp") << request_year 
+      record.at("year_of_publication") << publish_year
+      record.at("year_of_publication_stamp") << publish_year 
+      record.at("pubyear_usage_count") << count
+      return record
     end
   end
 end

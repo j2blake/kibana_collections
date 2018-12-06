@@ -99,6 +99,10 @@ module WileyFiles
       def scan
         @by_doi.values
       end
+
+      def scan_hash
+        @by_doi
+      end
     end
   end
 end

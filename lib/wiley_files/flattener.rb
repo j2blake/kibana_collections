@@ -24,7 +24,7 @@ Merged structure:
     total_usage_by_month => { "JR1_2016" => 30, "JR1_2017" => 104 }
     price => {
       145.5 => ["ABC", "ABC/A"],
-      1550 => "XYZ" 
+      1550 => "XYZ"
   }
 }
 
@@ -88,76 +88,56 @@ doi, journal, proprietary_id, print_issn, online_issn, total_usage_by_month, tot
 ------------------------------------------
 =end
 
-#
-# {
-#  "doi"=>"10.1002/(ISSN)1536-0709a",
-#  "journal"=>"AAHE-ERIC/Higher Education Research Report",
-#  "proprietary_id"=>"AEHE",
-#  "print_issn"=>"0737-1764",
-#  "online_issn"=>"1536-0709",
-#  "by_year_of_publication"=> {
-#    "2018"=>"0",
-#    "2017"=>"0",
-#    "2016"=>"0",
-#    "2015"=>"0",
-#    "2014"=>"0",
-#    "2013"=>"0",
-#    "2012"=>"0",
-#    "2011"=>"0",
-#    "2010"=>"0",
-#    "2009"=>"0",
-#    "2008"=>"0",
-#    "2007"=>"0",
-#    "2006"=>"0",
-#    "2005"=>"0",
-#    "2004"=>"0",
-#    "2003"=>"0",
-#    "2002"=>"0",
-#    "2001"=>"0",
-#    "2000"=>"0",
-#    "1999"=>"0",
-#    "1998"=>"0",
-#    "1997"=>"0",
-#    "1996"=>"0",
-#    "1995"=>"0",
-#    "1994"=>"0",
-#    "1993"=>"0",
-#    "1992"=>"0",
-#    "1991"=>"0",
-#    "1990"=>"0",
-#    "other"=>"2"
-#   },
-#   "total_usage"=>2
-# }
-
-# {
-#   "doi"=>"10.1002/(ISSN)1536-0709a",
-#   "journal"=>"AAHE-ERIC/Higher Education Research Report",
-#   "proprietary_id"=>"AEHE",
-#   "print_issn"=>"0737-1764",
-#   "online_issn"=>"1536-0709",
-#   "by_month"=>{
-#     "2016-01"=>"0",
-#     "2016-02"=>"0",
-#     "2016-03"=>"0",
-#     "2016-04"=>"0",
-#     "2016-05"=>"0",
-#     "2016-06"=>"0",
-#     "2016-07"=>"0",
-#     "2016-08"=>"0",
-#     "2016-09"=>"1",
-#     "2016-10"=>"0",
-#     "2016-11"=>"0",
-#     "2016-12"=>"0"
-#   },
-#   "summary"=>{
-#     "total"=>"1",
-#     "total_html"=>"0",
-#     "total_pwd"=>"1"
-#   }
-# }
-
 module WileyFiles
   class Flattener
+    def initialize(reporter)
+      @reporter = reporter
+    end
+
+    def flatten(curried)
+      @records = []
+      curried.each do |doi, data|
+        @records << create_summary_record(doi, data)
+        data["by_month"].to_a.each do |by_month|
+          @records << create_by_month_record(doi, data, by_month)
+        end
+        data["by_year_of_publication"].to_a.each do |by_year_of_publication|
+          @records << create_by_year_of_publication_record(doi, data, by_year_of_publication)
+        end
+      end
+
+      @reporter.report("BOGUS flatten")
+      pp @records.take(50)
+    end
+
+    def create_summary_record(doi, data)
+      record = {}
+      record.at("doi") << doi
+      record.at("journal") << data.at("journal")
+      record.at("proprietary_id") << data.at("proprietary_id")
+      record.at("print_issn") << data.at("print_issn")
+      record.at("online_issn") << data.at("online_issn")
+      record.at("total_usage_by_month") << data.at("total_usage", "by_month")
+      record.at("total_usage_by_year_of_publication") << data.at("total_usage", "by_year_of_publication")
+      record.at("price") << data.at("price")
+      return record
+    end
+
+    def create_by_month_record(doi, data, by_month)
+      record = {}
+      record.at("doi") << doi
+      record.at("journal") << data.at("journal")
+      record.at("proprietary_id") << data.at("proprietary_id")
+      record.at("print_issn") << data.at("print_issn")
+      record.at("online_issn") << data.at("online_issn")
+      record.at("usage_month") << by_month[0]
+      record.at("usage_month_stamp") << by_month[0]
+      record.at("usage_count") << by_month[1]
+      return record
+    end
+
+    def create_by_year_of_publication_record(doi, data, by_year_of_publication)
+      return "bogus by_year_of_publication record"
+    end
   end
 end

@@ -41,7 +41,7 @@ module WileyFiles
         @contents.each do |row|
           propId = resolve(row[""])
           title = resolve(row["Title"])
-          price = resolve(row["Price"]).to_f
+          price = resolve(row["Price"])
           if price
             @reporter.report(:price_found, propId: propId, title: title, price: price)
           else
@@ -55,7 +55,7 @@ module WileyFiles
         return nil if value.nil?
         value = value.strip
 
-        return nil if value.empty? or value == "#N/A"
+        return nil if value.empty? || value == "#N/A"
         return value
       end
 

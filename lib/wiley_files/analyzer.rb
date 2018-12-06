@@ -10,7 +10,7 @@ module WileyFiles
     end
 
     def create_scanners
-      @reporter.mute do |reporter|
+      @reporter.noop do |reporter|
         @scanners = {}
         @scanners["PriceListE"] = Scan::PriceListEScanner.new(filepath("PriceListE"), reporter)
         @scanners["SubscriptionJournals"] = Scan::SubscriptionJournalsScanner.new(filepath("SubscriptionJournals"), @reporter)
@@ -40,20 +40,20 @@ module WileyFiles
 
     def merge_prices_by_doi
       merged_by_doi = {}
-      @jr5_scanners.each do |filename, scanner|
-        #        puts "\nBOGUS row"
-        #        pp scanner.scan.take(1)
+      @jr1_scanners.each do |filename, scanner|
         scanner.scan.each do |row|
           merged_by_doi.at(row["doi"], "proprietary_id", row.at("proprietary_id").get) << filename
           merged_by_doi.at(row["doi"], "total_usage", row.at("total_usage").get) << filename
         end
       end
-      #      puts "\nBOGUS merged"
-      #      pp merged_by_doi.first(1)
+      @jr5_scanners.each do |filename, scanner|
+        scanner.scan.each do |row|
+          merged_by_doi.at(row["doi"], "proprietary_id", row.at("proprietary_id").get) << filename
+          merged_by_doi.at(row["doi"], "total_usage", row.at("total_usage").get) << filename
+        end
+      end
 
       price_list = @scanners["PriceListE"].scan
-      #      puts "\nBOGUS price_list"
-      #      pp price_list.first(5)
 
       @reporter.limit(10) do |reporter|
         merged_by_doi.each do |doi, values|
@@ -82,10 +82,18 @@ module WileyFiles
         self.select(keys.sort.take(how_many))
       end
     end
+    
+    def output_elasticsearch_records
+      merged = Merger.new(@reporter).merge(@jr1_scanners, @jr5_scanners, @scanners["PriceListE"])
+      curried = Currier.new(@reporter).curry(merged)
+      flattened = Flattener.new(@reporter).flatten(curried)
+      Writer.new(@reporter).write(flattened)
+    end
 
     def run
       create_scanners
       merge_prices_by_doi
+      output_elasticsearch_records
       #      AnalyzeJr1AndJr5.new(@scanners, @reporter).new.run
       #      generate_records
     end

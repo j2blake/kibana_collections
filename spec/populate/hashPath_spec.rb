@@ -426,5 +426,23 @@ describe Populate::HashPath::HashPath do
         expect(actual).to eq(expected)
       end
     end
+
+    context 'with a nil in the path' do
+      it 'will not add at the top level' do
+        fail
+      end
+
+      it 'will not add at the second level' do
+        fail
+      end
+
+      it 'will not add beneath a pick' do
+        fail
+      end
+
+      it 'will not add well beneath a pick' do
+        fail
+      end
+    end
   end
 end

@@ -26,5 +26,6 @@ require 'wiley_files/scan/jr_scanner'
 require 'wiley_files/scan/jr1_scanner'
 require 'wiley_files/scan/jr5_scanner'
 require 'wiley_files/scan/price_list_e_scanner'
+require 'wiley_files/scan/subscription_journals_scanner'
 
 WileyFiles::Analyzer.new(ARGV[0]).run

@@ -13,6 +13,7 @@ module WileyFiles
       @reporter.mute do |reporter|
         @scanners = {}
         @scanners["PriceListE"] = Scan::PriceListEScanner.new(filepath("PriceListE"), reporter)
+        @scanners["SubscriptionJournals"] = Scan::SubscriptionJournalsScanner.new(filepath("SubscriptionJournals"), @reporter)
 
         @scanners["JR1_2016"] = Scan::Jr1Scanner.new(filepath("JR1_2016"), reporter)
         @scanners["JR1_2017"] = Scan::Jr1Scanner.new(filepath("JR1_2017"), reporter)

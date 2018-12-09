@@ -1,18 +1,16 @@
 module WileyFiles
   module Report
     class PrefixedReporter < Reporter
-      def initialize(wrapped, prefix)
-        @wrapped = wrapped
-        @prefix = prefix
+      def initialize(parent, prefix, options={})
         super()
+        @parent = parent
+        @prefix = prefix
+        @options = resolve_options(@parent.options, options)
+        @template_map = Hash.new {|h, k| @parent.resolve_template(k)}
       end
       
-      def report(template, values={})
-        @wrapped.report(@prefix + lookup(template), values)
-      end
-      
-      def close
-        @wrapped.close
+      def get_prefixes
+        @parent.get_prefixes + [@prefix]
       end
     end
   end

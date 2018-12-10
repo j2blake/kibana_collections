@@ -3,12 +3,12 @@ module WileyFiles
     class PriceListEScanner
       def initialize(filename, reporter)
         @filename = filename
+        prefix = File.basename(filename, ".*") + ": "
 
-        prefixed = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
-        prefixed.set_template(:price_missing, "No value for USA price in %{row}")
-        prefixed.set_template(:duplicate_code, "code '%{code}' in \n%{existing} matches code in \n%{new}")
-        prefixed.limit(5) do |reporter|
-          @reporter = reporter
+        reporter.with_prefix(prefix, limit: 5) do |r|
+          @reporter = r
+          @reporter.set_template(:price_missing, "No value for USA price in %{row}")
+          @reporter.set_template(:duplicate_code, "code '%{code}' in \n%{existing} matches code in \n%{new}")
           read
           compile
         end

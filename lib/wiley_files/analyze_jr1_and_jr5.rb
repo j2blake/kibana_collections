@@ -12,10 +12,17 @@ Differences between %{key1} to %{key2}:
     #
     def initialize(scanners, reporter)
       @scanners = scanners
-      @reporter = Report::PrefixedReporter.new(reporter, "AnalyzeJr1AndJr5")
-      @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
-      @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
-      @reporter.set_template(:different_associations_by_file, "%{key1} '%{value1}' maps to more than one %{key2} \n%{values_map}")
+      @parent_reporter = reporter
+    end
+
+    def with_reporter
+      @parent_reporter.with_prefix("AnalyzeJr1AndJr5") do |r|
+        @reporter = r
+        @reporter.set_template(:year_to_year_differences, YEAR_TO_YEAR)
+        @reporter.set_template(:jr1_to_jr5_differences, JR1_TO_JR5)
+        @reporter.set_template(:different_associations_by_file, "%{key1} '%{value1}' maps to more than one %{key2} \n%{values_map}")
+        yield
+      end
     end
 
     def analyze_by_doi
@@ -66,7 +73,7 @@ Differences between %{key1} to %{key2}:
     end
 
     def compare_associations_by_file(key1, key2, report_limit)
-      @reporter.limit(report_limit) do |reporter|
+      @reporter.with_prefix("#{key1}_to_#{key2}", limit: report_limit) do |reporter|
         values_by_file = {}
         @scanners.each do |filename, scanner|
           scanner.scan.each do |row|
@@ -86,8 +93,10 @@ Differences between %{key1} to %{key2}:
     end
 
     def analyze
-      analyze_by_doi
-      analyze_by_proprietary_id
+      with_reporter do
+        analyze_by_doi
+        analyze_by_proprietary_id
+      end
     end
   end
 end

@@ -6,19 +6,18 @@ module WileyFiles
       #
       def initialize(filename, reporter)
         @filename = filename
+        prefix = File.basename(filename, ".*") + ": "
 
-        prefixed = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
-        prefixed.set_template(:missing_doi, MISSING_VALUE)
-        prefixed.set_template(:missing_propId, MISSING_VALUE)
-        prefixed.set_template(:missing_printISSN, MISSING_VALUE)
-        prefixed.set_template(:missing_onlineISSN, MISSING_VALUE)
-        prefixed.set_template(:duplicate_doi, DUPLICATE_VALUE)
-        prefixed.set_template(:duplicate_propId, DUPLICATE_VALUE)
-        prefixed.set_template(:duplicate_printISSN, DUPLICATE_VALUE)
-        prefixed.set_template(:duplicate_onlineISSN, DUPLICATE_VALUE)
-
-        prefixed.limit(5) do |reporter|
-          @reporter = reporter
+        reporter.with_prefix(prefix, limit: 5) do |r|
+          @reporter = r
+          @reporter.set_template(:missing_doi, MISSING_VALUE)
+          @reporter.set_template(:missing_propId, MISSING_VALUE)
+          @reporter.set_template(:missing_printISSN, MISSING_VALUE)
+          @reporter.set_template(:missing_onlineISSN, MISSING_VALUE)
+          @reporter.set_template(:duplicate_doi, DUPLICATE_VALUE)
+          @reporter.set_template(:duplicate_propId, DUPLICATE_VALUE)
+          @reporter.set_template(:duplicate_printISSN, DUPLICATE_VALUE)
+          @reporter.set_template(:duplicate_onlineISSN, DUPLICATE_VALUE)
           read
           compile
         end

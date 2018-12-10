@@ -3,14 +3,19 @@ module WileyFiles
     def initialize(dirname)
       @dirname = dirname
       @records = []
-      @reporter = Report::Reporter.new
+    end
+
+    def with_reporter
+      @reporter = Report::Reporter.new(with_totals: true, with_details: true)
       @reporter.set_template(:no_price, "Price not found for '%{doi}', ids=%{propIds}")
       @reporter.set_template(:good_price, "Good price for '%{doi}', ids=%{propIds}, prices=%{price_map}")
       @reporter.set_template(:multiple_prices, "Multiple prices for '%{doi}', ids=%{propIds}, prices=%{price_map}")
+      yield
+      @reporter.close
     end
 
     def create_scanners
-      @reporter.noop do |reporter|
+      @reporter.reporter do |reporter|
         @scanners = {}
         @scanners["PriceListE"] = Scan::PriceListEScanner.new(filepath("PriceListE"), reporter)
         @scanners["SubscriptionJournals"] = Scan::SubscriptionJournalsScanner.new(filepath("SubscriptionJournals"), @reporter)
@@ -35,7 +40,7 @@ module WileyFiles
     def analyze_jr1_and_jr5s
       AnalyzeJr1AndJr5.new(@jr1_scanners.merge(@jr5_scanners), @reporter).analyze
     end
-    
+
     # REMOVE FLATTENERS
     #    def generate_records
     #      @scanners.each do |filename, scanner|
@@ -61,7 +66,7 @@ module WileyFiles
 
       price_list = @scanners["PriceListE"].scan
 
-      @reporter.limit(10) do |reporter|
+      @reporter.with_prefix("merge_prices", limit: 10) do |reporter|
         merged_by_doi.each do |doi, values|
           propIds = values["proprietary_id"].keys
           propIds.each do |propId|
@@ -97,10 +102,12 @@ module WileyFiles
     end
 
     def run
-      create_scanners
-      analyze_jr1_and_jr5s
-      merge_prices_by_doi
-      output_elasticsearch_records
+      with_reporter do
+        create_scanners
+        analyze_jr1_and_jr5s
+        merge_prices_by_doi
+        output_elasticsearch_records
+      end
       #      AnalyzeJr1AndJr5.new(@scanners, @reporter).new.run
       #      generate_records
     end

@@ -3,12 +3,12 @@ module WileyFiles
     class SubscriptionJournalsScanner
       def initialize(filename, reporter)
         @filename = filename
+        prefix = File.basename(filename, ".*") + ": "
 
-        prefixed = Report::PrefixedReporter.new(reporter, File.basename(filename, ".*") + ": ")
-        prefixed.set_template(:price_missing, "No price for %{propId} '%{title}'")
-        prefixed.set_template(:price_found, "Price for %{propId} '%{title}' is %{price}")
-        prefixed.limit(5) do |reporter|
-          @reporter = reporter
+        reporter.with_prefix(prefix, limit: 5) do |r|
+          @reporter = r
+          @reporter.set_template(:price_missing, "No price for %{propId} '%{title}'")
+          @reporter.set_template(:price_found, "Price for %{propId} '%{title}' is %{price}")
           read
           compile
         end

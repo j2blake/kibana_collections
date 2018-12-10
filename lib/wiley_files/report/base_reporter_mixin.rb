@@ -1,14 +1,36 @@
 module WileyFiles
   module Report
     module BaseReporterMixin
-      def with_prefix(prefix, options = {})
-        prefixed = Report::PrefixedReporter.new(self, prefix, options)
-        begin
-          if block_given?
-            yield prefixed
+      #
+      # Create a child Reporter with different options from the parent.
+      #
+      def reporter(options = {})
+        child = Report::ReporterWrapper.new(self, options)
+        if block_given?
+          begin
+            yield child
+          ensure
+            child.close
           end
-        ensure
-          prefixed.close
+        else
+          child
+        end
+      end
+
+      #
+      # Create a child Reporter that adds a prefix to each message, and may have
+      # different options from the parent.
+      #
+      def with_prefix(prefix, options = {})
+        child = Report::PrefixedReporter.new(self, prefix, options)
+        if block_given?
+          begin
+            yield child
+          ensure
+            child.close
+          end
+        else
+          child
         end
       end
     end

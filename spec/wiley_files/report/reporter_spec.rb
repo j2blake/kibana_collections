@@ -1,6 +1,5 @@
 require_relative '../../spec_helper'
-require_relative '../../../lib/wiley_files/report/reporter'
-require_relative '../../../lib/wiley_files/report/prefixed_reporter'
+require_relative '../../../lib/wiley_files/report/report'
 
 RSpec::Matchers.define_negated_matcher :not_include, :include
 
@@ -134,6 +133,51 @@ describe WileyFiles::Report::Reporter do
         end
         r.report("Don't see me")
       }.to output(include("See me").and not_include("Don't see me")).to_stdout
+    end
+  end
+
+  context 'when limiting' do
+    it 'works on a reporter' do
+      expect {
+        r = WileyFiles::Report::Reporter.new(limit: 2)
+        r.report("X")
+        r.report("X")
+        r.report("X")
+        r.close
+      }.to output(match(/X.* X[^X]* more: X/m)).to_stdout
+    end
+
+    it 'works on a sub-reporter' do
+      expect {
+        r = WileyFiles::Report::Reporter.new
+        r.reporter(limit: 2) do |sub|
+          sub.report("X")
+          sub.report("X")
+          sub.report("X")
+        end
+      }.to output(match(/X.* X[^X]* more: X/m)).to_stdout
+    end
+
+    it 'works on a prefixer' do
+      expect {
+        r = WileyFiles::Report::Reporter.new
+        r.with_prefix("p1", limit: 2) do |p|
+          p.report("X")
+          p.report("X")
+          p.report("X")
+        end
+      }.to output(match(/p1 X.* p1 X[^X]* p1.* more: X/m)).to_stdout
+    end
+
+    it 'works above a prefixer' do
+      expect {
+        r = WileyFiles::Report::Reporter.new(limit: 2)
+        r.with_prefix("p1") do |p|
+          p.report("X")
+          p.report("X")
+          p.report("X")
+        end
+      }.to output(match(/p1 X.* p1 X[^X]* p1.* more: X/m)).to_stdout
     end
   end
 end

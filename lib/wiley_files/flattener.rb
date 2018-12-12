@@ -92,6 +92,9 @@ module WileyFiles
   class Flattener
     def initialize(reporter)
       @reporter = reporter
+      @reporter.set_template(:summary_record, "Summary record for %{doi}")
+      @reporter.set_template(:by_month_record, "By-month record for %{doi}")
+      @reporter.set_template(:by_year_of_publication_record, "By-year-of-publication record for %{doi}")
     end
 
     def flatten(curried)
@@ -107,9 +110,11 @@ module WileyFiles
           end
         end
       end
+      @records
     end
 
     def create_summary_record(doi, data)
+      @reporter.report(:summary_record, doi: doi)
       record = {}
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
@@ -123,6 +128,7 @@ module WileyFiles
     end
 
     def create_by_month_record(doi, data, month, count)
+      @reporter.report(:by_month_record, doi: doi)
       record = {}
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
@@ -130,12 +136,13 @@ module WileyFiles
       record.at("print_issn") << data.at("print_issn")
       record.at("online_issn") << data.at("online_issn")
       record.at("usage_month") << month
-      record.at("usage_month_stamp") << month 
+      record.at("usage_month_stamp") << to_stamp(month) 
       record.at("month_usage_count") << count
       return record
     end
 
     def create_by_year_of_publication_record(doi, data, request_year, publish_year, count)
+      @reporter.report(:by_year_of_publication_record, doi: doi)
       record = {}
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
@@ -143,11 +150,15 @@ module WileyFiles
       record.at("print_issn") << data.at("print_issn")
       record.at("online_issn") << data.at("online_issn")
       record.at("usage_year") << request_year
-      record.at("usage_year_stamp") << request_year 
+      record.at("usage_year_stamp") << to_stamp(request_year) 
       record.at("year_of_publication") << publish_year
-      record.at("year_of_publication_stamp") << publish_year 
+      record.at("year_of_publication_stamp") << to_stamp(publish_year) 
       record.at("pubyear_usage_count") << count
       return record
+    end
+    
+    def to_stamp(raw_date)
+      raw_date ? raw_date + " -0500" : nil
     end
   end
 end

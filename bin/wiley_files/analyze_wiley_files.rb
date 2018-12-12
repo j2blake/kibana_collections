@@ -10,12 +10,16 @@ Run through the JR1, JR5, and pricing files for overview and stats
 
 $: << File.expand_path("../../../lib", __FILE__)
 
+require 'json'
+require 'net/http'
+require 'optparse'
 require 'pp'
 
 require 'populate/hashPath'
 
 require 'wiley_files/analyzer'
 require 'wiley_files/analyze_jr1_and_jr5'
+require 'wiley_files/command_line'
 require 'wiley_files/currier'
 require 'wiley_files/flattener'
 require 'wiley_files/merger'

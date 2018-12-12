@@ -5,4 +5,4 @@
 # ------------------
 #
 
-../../bin/wiley_files/analyze_wiley_files.rb ../../test_data/wiley_files/
+../../bin/wiley_files/analyze_wiley_files.rb ../../test_data/wiley_files/ "$@"

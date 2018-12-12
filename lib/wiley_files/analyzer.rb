@@ -3,6 +3,7 @@ module WileyFiles
     def initialize(dirname)
       @dirname = dirname
       @records = []
+      @options = CommandLine.new.parse
     end
 
     def with_reporter
@@ -97,8 +98,8 @@ module WileyFiles
     def output_elasticsearch_records
       merged = Merger.new(@reporter).merge(@jr1_scanners, @jr5_scanners, @scanners["PriceListE"])
       curried = Currier.new(@reporter).curry(merged)
-      flattened = Flattener.new(@reporter).flatten(curried)
-      Writer.new(@reporter).write(flattened)
+      flattened = @reporter.with_prefix("Flattener", with_details: true, limit: 5, with_totals: true) { |r| Flattener.new(r).flatten(curried) }
+      Writer.new(@options, @reporter).write(flattened)
     end
 
     def run

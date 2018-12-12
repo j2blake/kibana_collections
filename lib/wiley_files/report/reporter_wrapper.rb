@@ -17,6 +17,14 @@ module WileyFiles
       def get_prefixes
         @parent.get_prefixes
       end
+      
+      def close
+        @parent.push_totals(get_prefixes, @counts)
+        if @options[:with_details]
+          show_limited
+          show_blank
+        end
+      end
     end
   end
 end

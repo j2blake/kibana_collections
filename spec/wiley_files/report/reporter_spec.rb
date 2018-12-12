@@ -45,7 +45,9 @@ describe WileyFiles::Report::Reporter do
 
   context 'when options are used' do
     def with_options(options)
-      yield WileyFiles::Report::Reporter.new(options)
+      r = WileyFiles::Report::Reporter.new(options)
+      yield r
+      r.close
     end
 
     it 'can show totals' do
@@ -54,9 +56,8 @@ describe WileyFiles::Report::Reporter do
           r.set_template(:template_name, "Try this.")
           r.report(:template_name)
           r.report(:template_name)
-          r.close
         end
-      }.to output(include("Total template_name: 2").and include("Try this")).to_stdout
+      }.to output(include("template_name: 2").and include("Try this")).to_stdout
     end
 
     it 'can show only totals' do
@@ -65,9 +66,8 @@ describe WileyFiles::Report::Reporter do
           r.set_template(:template_name, "Try this.")
           r.report(:template_name)
           r.report(:template_name)
-          r.close
         end
-      }.to output(include("Total template_name: 2").and not_include("Try this")).to_stdout
+      }.to output(include("template_name: 2").and not_include("Try this")).to_stdout
     end
 
     it 'can run silent' do
@@ -76,7 +76,6 @@ describe WileyFiles::Report::Reporter do
           r.set_template(:template_name, "Try this.")
           r.report(:template_name)
           r.report(:template_name)
-          r.close
         end
       }.to_not output.to_stdout
     end
@@ -93,6 +92,7 @@ describe WileyFiles::Report::Reporter do
           yield r, p1, p2
         end
       end
+      r.close
     end
 
     it 'includes one or more prefixes in the report' do
@@ -112,7 +112,7 @@ describe WileyFiles::Report::Reporter do
           p1.report(:t1)
           p2.report(:t2)
         end
-      }.to output(match(/.* p1 p2 Total t2: 1.* p1 Total t1: 1/m)).to_stdout
+      }.to output(match(/.* p1 p2 t2: 1.* p1 t1: 1/m)).to_stdout
     end
 
     it 'can use templates from the parent' do

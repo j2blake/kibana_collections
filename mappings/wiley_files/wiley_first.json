@@ -1,0 +1,59 @@
+{
+	"mappings": {
+		"_doc": {
+			"properties": {
+				"doi": {
+					"type": "keyword"
+				},
+				"journal": {
+					"type": "keyword"
+				},
+				"proprietary_id": {
+					"type": "keyword"
+				},
+				"print_issn": {
+					"type": "keyword"
+				},
+				"online_issn": {
+					"type": "keyword"
+				},
+				"total_usage_by_month": {
+					"type": "integer"
+				},
+				"total_usage_by_year_of_publication": {
+					"type": "integer"
+				},
+				"price": {
+					"type": "float"
+				},
+				"usage_month": {
+					"type": "keyword"
+				},
+				"usage_month_stamp": {
+					"type": "date",
+					"format": "yyyy-mm Z"
+				},
+				"month_usage_count": {
+					"type": "integer"
+				},
+				"usage_year": {
+					"type": "keyword"
+				},
+				"usage_year_stamp": {
+					"type": "date",
+					"format": "yyyy Z"
+				},
+				"year_of_publication": {
+					"type": "keyword"
+				},
+				"year_of_publication_stamp": {
+					"type": "date",
+					"format": "yyyy Z"
+				},
+				"pubyear_usage_count": {
+					"type": "integer"
+				}
+			}
+		}
+	}
+}

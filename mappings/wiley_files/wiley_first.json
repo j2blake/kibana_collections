@@ -31,7 +31,7 @@
 				},
 				"usage_month_stamp": {
 					"type": "date",
-					"format": "yyyy-mm Z"
+					"format": "yyyy-MM Z"
 				},
 				"month_usage_count": {
 					"type": "integer"

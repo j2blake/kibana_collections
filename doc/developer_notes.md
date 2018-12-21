@@ -1,5 +1,13 @@
 # Developer notes
 
+## Date-time formats
+* Find the list of format specifiers here: [DateTimeFormat][JodaDateTimeFormat]
+* Dates are written to Elasticsearch using a format specifier for Eastern Standard Time.
+	* If this is not done, then a date like `Jan-2018` is rendered as `Dec-2017_19:00:00`
+	* So, for example, a time stamp for the beginning of the year is written as `2018 -0500`
+		* The format specifier for that field in the mapping would be `yyyy Z`
+	* QUESTION/PROBLEM What happens when we display these things during Daylight Savings Time?
+
 ## Drill-down to another dashboard
 
 * It appears that there is no sanctioned way to do this.
@@ -18,3 +26,5 @@ http://localhost:5601/app/kibana#/dashboard/cc8aef50-e43f-11e8-b9e6-ab54006f449f
 		
 	* Carving away the "index" parameter gives the same page, 
 	with the same filtering, but the filter does not appear in the filter bar.
+	
+[JodaDateTimeFormat]: https://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html

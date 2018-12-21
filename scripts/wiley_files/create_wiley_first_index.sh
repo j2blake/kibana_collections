@@ -1,14 +1,19 @@
 
 # ------------------
 #
-# Read CostPerUseAll.csv and put it into an index, flattened by year of usage data
-# (2016, 2017, 2018)
+# Read the data files from raw_data/wiley_files, merge the data together, and
+# put it into an index, flattened in a variety of ways:
 #
-# Create one document for each year that we have data on a journal.
+# For each journal, create a summary record.
+# For each journal, for every month that we have recorded usage, create a "by_month" record
+# For each journal, for every year-of-publication usage count, create a "by-year-of-publication" record.
 #
 # ------------------
 #
 # Notes:
+#
+# Runs for about 25 minutes to create about 270,000 records
+#
 # ------------------
 #
 

@@ -1,0 +1,173 @@
+[
+  {
+    "_id": "8a037cc0-0f77-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Bad example of Vega filtering",
+      "visState": "{\"title\":\"Bad example of Vega filtering\",\"type\":\"vega\",\"params\":{\"spec\":\"/*\\n\\nScatter-plot of average usage (linear) vs. price (log). \\n\\nNot interactive\\n\\n*/\\n{\\n  $schema: \\\"https://vega.github.io/schema/vega/v3.json\\\",\\n  padding: 5,\\n\\n  data: [\\n  {\\n    name: \\\"valid\\\",\\n    url: {\\n      %context%: true,\\n      index: \\\"costperuse_first\\\",\\n      body: {\\n        size: 10000,\\n        _source: [\\\"price\\\", \\\"averageUsage\\\", \\\"name\\\"]\\n      }\\n    },\\n    format: {\\n      property: \\\"hits.hits\\\"\\n    },\\n    transform: [\\n      { \\n        type: \\\"formula\\\", \\n        expr: \\\"datum._source.name\\\", \\n        as: \\\"link\\\"      \\n      },\\n      {\\n        type: \\\"filter\\\",\\n        expr: \\\"datum._source.price != null && datum._source.averageUsage != null\\\"\\n      }\\n    ]\\n  }\\n  ],\\n  scales: [\\n    {\\n      name: \\\"x\\\",\\n      type: \\\"log\\\",\\n      round: true,\\n      nice: true,\\n      zero: false,\\n      domain: {data: \\\"valid\\\", field: \\\"_source.price\\\"},\\n      range: \\\"width\\\"\\n    },\\n    {\\n      name: \\\"y\\\",\\n      type: \\\"linear\\\",\\n      round: true,\\n      nice: true,\\n      zero: true,\\n      domain: {data: \\\"valid\\\", field: \\\"_source.averageUsage\\\"},\\n      range: \\\"height\\\"\\n    }\\n  ],\\n\\n  axes: [\\n    {\\n      scale: \\\"x\\\",\\n      grid: true,\\n      domain: false,\\n      orient: \\\"bottom\\\",\\n      tickCount: 5,\\n      title: \\\"Price\\\"\\n    },\\n    {\\n      scale: \\\"y\\\",\\n      grid: true,\\n      domain: false,\\n      orient: \\\"left\\\",\\n      titlePadding: 5,\\n      title: \\\"Average Usage\\\"\\n    }\\n  ],\\n\\n  marks: [\\n    {\\n      name: \\\"marks\\\",\\n      type: \\\"symbol\\\",\\n      from: {data: \\\"valid\\\"},\\n      encode: {\\n        enter: {\\n          x: {scale: \\\"x\\\", field: \\\"_source.price\\\"},\\n          y: {scale: \\\"y\\\", field: \\\"_source.averageUsage\\\"},\\n          shape: {value: \\\"circle\\\"},\\n          strokeWidth: {value: 2},\\n          opacity: {value: 0.5},\\n          stroke: {value: \\\"#4682b4\\\"},\\n          fill: {value: \\\"transparent\\\"},\\n          tooltip: {field: \\\"_source.name\\\"}\\n        }\\n      }\\n    },\\n   {\\n      type: group\\n      name: applyTimeFilterButton\\n      encode: {\\n        enter: {\\n          cursor: {value: \\\"pointer\\\"}\\n          cornerRadius: {value: 6}\\n          fill: {value: \\\"#f5f5f5\\\"}\\n          stroke: {value: \\\"#c1c1c1\\\"}\\n          strokeWidth: {value: 2}\\n          xc: {signal: \\\"width/2\\\"}\\n          yc: {signal: \\\"height/2\\\"}\\n          width: {value: 120}\\n          height: {value: 30}\\n        }\\n        update: {\\n          opacity: {value: 1}\\n        }\\n        hover: {\\n          opacity: {value: 0.7}\\n        }\\n      }\\n      marks: [\\n        {\\n          type: text\\n          encode: {\\n            enter: {\\n              text: {\\\"value\\\": \\\"Text Label2\\\"}\\n              dx: {value: 40}\\n              dy: {value: 20}\\n            }\\n          }\\n        }\\n      ]\\n    }\\n  ]\\n    signals: [\\n    {\\n      name: option\\n      value: OPT A\\n      bind: {\\n        input: select\\n        options: [\\\"OPT A\\\", \\\"OPT B\\\", \\\"OPT C\\\"]\\n      }\\n    }\\n    {\\n      name: btn\\n      on: [\\n        {\\n          events: @applyTimeFilterButton:click[!event.shiftKey]\\n          update:\\n            '''\\n            kibanaAddFilter({\\n                      match: {\\n                      'myfield': {\\n                        query: option,\\n                        type: 'phrase'\\n                    }}})\\n                    \\n            '''\\n        }\\n        {\\n          events: @applyTimeFilterButton:click[event.shiftKey]\\n          update: kibanaRemoveAllFilters()\\n        }\\n      ]\\n    }\\n  ]\\n\\n}\\n\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "b4f11a30-0f79-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley Usage by year and month",
+      "visState": "{\"title\":\"Wiley Usage by year and month\",\"type\":\"line\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"grid\":{\"categoryLines\":true,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"legendPosition\":\"bottom\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Usage\"},\"drawLinesBetweenPoints\":true,\"mode\":\"normal\",\"show\":\"true\",\"showCircles\":true,\"type\":\"histogram\",\"valueAxis\":\"ValueAxis-1\",\"interpolate\":\"step-after\"}],\"times\":[],\"type\":\"line\",\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Usage\"},\"type\":\"value\"}],\"orderBucketsBySum\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"month_usage_count\",\"customLabel\":\"Usage\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"usage_month_stamp_mm\",\"interval\":1,\"min_doc_count\":false,\"extended_bounds\":{},\"customLabel\":\"By month\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"histogram\",\"schema\":\"split\",\"params\":{\"field\":\"usage_month_stamp_yyyy\",\"interval\":1,\"extended_bounds\":{},\"customLabel\":\"By year\",\"row\":true}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"exists\":{\"field\":\"month_usage_count\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"key\":\"month_usage_count\",\"negate\":false,\"type\":\"exists\",\"value\":\"exists\"}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "4d8be390-0540-11e9-9954-17b36fad23b1",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley usage by month",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"customLabel\":\"Usage by month\",\"field\":\"month_usage_count\"},\"schema\":\"metric\",\"type\":\"sum\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"customLabel\":\"Month of usage\",\"extended_bounds\":{},\"field\":\"usage_month_stamp\",\"interval\":\"M\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"}],\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"filter\":true,\"rotate\":90,\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"legendPosition\":\"right\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Usage by month\"},\"drawLinesBetweenPoints\":true,\"mode\":\"normal\",\"show\":\"true\",\"showCircles\":true,\"type\":\"histogram\",\"valueAxis\":\"ValueAxis-1\"}],\"times\":[],\"type\":\"line\",\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Usage by month\"},\"type\":\"value\"}]},\"title\":\"Wiley usage by month\",\"type\":\"line\"}",
+      "uiStateJSON": "{\"vis\":{\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "86871880-0f7d-11e9-a848-657a517453b9",
+    "_type": "search",
+    "_source": {
+      "title": "Journal summaries",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "journal",
+        "doi",
+        "price",
+        "online_issn",
+        "print_issn"
+      ],
+      "sort": [
+        "_score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"exists\":{\"field\":\"price\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"key\":\"price\",\"negate\":false,\"type\":\"exists\",\"value\":\"exists\"}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "91904d40-0f7e-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley usage by year of publication",
+      "visState": "{\"title\":\"Wiley usage by year of publication\",\"type\":\"line\",\"params\":{\"type\":\"line\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100,\"rotate\":90},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Usage count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Usage count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"pubyear_usage_count\",\"customLabel\":\"Usage count\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year_of_publication_stamp\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Year of publication\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "9693f420-0f80-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley usage by year of publication by year",
+      "visState": "{\"title\":\"Wiley usage by year of publication by year\",\"type\":\"line\",\"params\":{\"type\":\"line\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100,\"rotate\":90},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Usage\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Usage\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"pubyear_usage_count\",\"customLabel\":\"Usage\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year_of_publication_stamp\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Year of publication\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"histogram\",\"schema\":\"split\",\"params\":{\"field\":\"usage_year_stamp_yyyy\",\"interval\":1,\"extended_bounds\":{},\"customLabel\":\"Used in\",\"row\":true}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"meta\":{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"exists\",\"key\":\"usage_year_stamp\",\"value\":\"exists\"},\"exists\":{\"field\":\"usage_year_stamp\"},\"$state\":{\"store\":\"appState\"}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "949b1910-0f7a-11e9-a848-657a517453b9",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Wiley dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"embeddableConfig\":{\"vis\":{\"legendOpen\":false}},\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":10,\"i\":\"1\"},\"id\":\"4d8be390-0540-11e9-9954-17b36fad23b1\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{\"vis\":{\"legendOpen\":false}},\"gridData\":{\"x\":0,\"y\":22,\"w\":24,\"h\":15,\"i\":\"2\"},\"id\":\"b4f11a30-0f79-11e9-a848-657a517453b9\",\"panelIndex\":\"2\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":10,\"w\":48,\"h\":12,\"i\":\"4\"},\"id\":\"91904d40-0f7e-11e9-a848-657a517453b9\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{\"vis\":{\"legendOpen\":false}},\"gridData\":{\"x\":24,\"y\":22,\"w\":24,\"h\":15,\"i\":\"5\"},\"id\":\"9693f420-0f80-11e9-a848-657a517453b9\",\"panelIndex\":\"5\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"gridData\":{\"x\":0,\"y\":37,\"w\":48,\"h\":12,\"i\":\"6\"},\"version\":\"6.4.2\",\"panelIndex\":\"6\",\"type\":\"search\",\"id\":\"8b80d780-0f83-11e9-a848-657a517453b9\",\"embeddableConfig\":{}}]",
+      "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "8b80d780-0f83-11e9-a848-657a517453b9",
+    "_type": "search",
+    "_source": {
+      "title": "Journals with usage",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "journal",
+        "doi",
+        "price",
+        "online_issn",
+        "print_issn",
+        "details_link"
+      ],
+      "sort": [
+        "_score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"highlightAll\":true,\"version\":true,\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"exists\":{\"field\":\"price\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"key\":\"price\",\"negate\":false,\"type\":\"exists\",\"value\":\"exists\"}},{\"$state\":{\"store\":\"appState\"},\"bool\":{\"must_not\":{\"bool\":{\"must_not\":{\"exists\":{\"field\":\"total_usage_by_year_of_publication\"}}}}},\"meta\":{\"alias\":\"one or the other\",\"disabled\":false,\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"key\":\"bool\",\"negate\":false,\"type\":\"custom\",\"value\":\"{\\\"must_not\\\":{\\\"bool\\\":{\\\"must_not\\\":{\\\"exists\\\":{\\\"field\\\":\\\"total_usage_by_year_of_publication\\\"}}}}}\"}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "a4b76300-fe2f-11e8-a539-d9dfb80e6e65",
+    "_type": "index-pattern",
+    "_source": {
+      "title": "wiley_first",
+      "fields": "[{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"doi\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"journal\",\"type\":\"string\",\"count\":4,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"month_usage_count\",\"type\":\"number\",\"count\":2,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"online_issn\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"price\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"print_issn\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"proprietary_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"pubyear_usage_count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"total_usage_by_month\",\"type\":\"number\",\"count\":4,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"total_usage_by_year_of_publication\",\"type\":\"number\",\"count\":4,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_month\",\"type\":\"string\",\"count\":3,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_month_stamp\",\"type\":\"date\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_year\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_year_stamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"year_of_publication\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"year_of_publication_stamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_month_stamp_yyyy\",\"type\":\"number\",\"count\":1,\"scripted\":true,\"script\":\"doc['usage_month_stamp'].getYear()\",\"lang\":\"expression\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"usage_month_stamp_mm\",\"type\":\"number\",\"count\":0,\"scripted\":true,\"script\":\"doc['usage_month_stamp'].getMonth() + 1\",\"lang\":\"expression\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"usage_year_stamp_yyyy\",\"type\":\"number\",\"count\":0,\"scripted\":true,\"script\":\"doc['usage_year_stamp'].getYear()\",\"lang\":\"expression\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"details_link\",\"type\":\"string\",\"count\":1,\"scripted\":true,\"script\":\"doc['doi'].value\",\"lang\":\"painless\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false}]",
+      "fieldFormatMap": "{\"usage_month_stamp\":{\"id\":\"date\",\"params\":{\"pattern\":\"YYYY-MM\"}},\"usage_month_stamp_yyyy\":{\"id\":\"number\",\"params\":{\"pattern\":\"0\"}},\"price\":{\"id\":\"number\",\"params\":{\"pattern\":\"$0,0\"}},\"usage_year_stamp_yyyy\":{\"id\":\"number\",\"params\":{\"pattern\":\"0\"}},\"details_link\":{\"id\":\"url\",\"params\":{\"urlTemplate\":\"http://localhost:5601/app/kibana#/dashboard/949b1910-0f7a-11e9-a848-657a517453b9?_a=(description:'',filters:!((meta:(index:a4b76300-fe2f-11e8-a539-d9dfb80e6e65,key:doi,params:(query:'{{value}}'),value:'{{value}}'),query:(match:(doi:(query:'{{value}}'))))))\",\"labelTemplate\":\"show details\",\"openLinkInCurrentTab\":true}}}"
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  }
+]

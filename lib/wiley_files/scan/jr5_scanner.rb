@@ -82,23 +82,6 @@ module WileyFiles
         return yop unless yop.start_with?("Pre")
         return "other"
       end
-
-      def flatten
-        @records = []
-        @compiled.each do |journal|
-          basic_keys = journal.keys - ["by_year_of_publication"]
-          basic_info = journal.clone.keep_if {|key| basic_keys.include?(key)}
-
-          journal["by_year_of_publication"].each do |yop, count|
-            if yop == "other"
-              @records << {"pubYear" => yop, "pubCount" => count}.merge(basic_info)
-            else
-              @records << {"pubYear" => yop, "stamp" => "#{yop} -0500", "pubCount" => count}.merge(basic_info)
-            end
-          end
-        end
-        return @records
-      end
     end
   end
 end

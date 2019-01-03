@@ -42,14 +42,6 @@ module WileyFiles
       AnalyzeJr1AndJr5.new(@jr1_scanners.merge(@jr5_scanners), @reporter).analyze
     end
 
-    # REMOVE FLATTENERS
-    #    def generate_records
-    #      @scanners.each do |filename, scanner|
-    #        @records += scanner.flatten
-    #      end
-    #    end
-    #
-
     def merge_prices_by_doi
       merged_by_doi = {}
       @jr1_scanners.each do |filename, scanner|

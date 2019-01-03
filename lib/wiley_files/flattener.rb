@@ -1,80 +1,9 @@
 =begin
-
 ------------------------------------------
 
-Merged structure:
-{
-  "10.1002/(ISSN)1536-0709a" => {
-    "journal" => {"This journal" => ["JR1_2016", "JR1_2017"], "That journal" => "JR1_2018"},
-    "proprietary_id" => {"ABC" => ["JR1_2016", "JR1_2017"], "XYZ" => "JR1_2018"},
-    # print_issn same
-    # online_issn same
-    "by_year_of_publication" => {
-      "2016" => {
-        "2016" => 0,
-        "2015" => 2,
-        "other" => 2
-      }
-    },
-    by_month => {
-      "2016-01" => 0,
-      "2017-05" => 2
-    },
-    total_usage_by_year_of_publication => { "JR5_2016" => 50}
-    total_usage_by_month => { "JR1_2016" => 30, "JR1_2017" => 104 }
-    price => {
-      145.5 => ["ABC", "ABC/A"],
-      1550 => "XYZ"
-  }
-}
+Produce an array of data structures for Elasticsearch records from the curried data structure.
 
-------------------------------------------
-
-Notes:
-
-Notice the two-tier structure of "byop". Get the top tier from the filename.
-
-Everything but price comes from JR1 and JR5. Prices are a lookup into PriceListE by propID
-
-------------------------------------------
-
-Curried structure:
-{
-  "10.1002/(ISSN)1536-0709a" => {
-    "journal" => "This journal",
-    "proprietary_id" => "ABC",
-    # print_issn same
-    # online_issn same
-    "by_year_of_publication" => {
-      "2016" => {
-        "2016" => 0,
-        "2015" => 2,
-        "other" => 2
-      }
-    },
-    by_month => {
-      "2016-01" => 0,
-      "2017-05" => 2
-    },
-    total_usage => { 54 => "by_year_of_publication", 50 => "by_month" }
-    price => 145.5
-  }
-}
-
-------------------------------------------
-
-Notes:
-
-Journal title is the most used, or alphabetically first of the most used.
-Same for proprietary ID, print ISSN, and online ISSN
-
-Each usage total is the sum of the contributions from differing files.
-
-Price is the smallest of the available prices (or remove multiple prices?)
-
-------------------------------------------
-
-Elasticsearch records should look like this:
+The Elasticsearch records should look like these:
 
 doi, journal, proprietary_id, print_issn, online_issn, usage_month, usage_month_stamp, month_usage_count
   one for each doi / usage_month combination

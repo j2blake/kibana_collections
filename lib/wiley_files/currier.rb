@@ -1,4 +1,5 @@
 =begin
+------------------------------------------
 
 From the result of Merger.merge, produce this Curried structure:
 {

@@ -1,0 +1,139 @@
+/*
+
+Scatter-plot of usage estimate (linear) vs. price (log). 
+
+Not interactive
+
+-------------
+
+BOGUS: for now, we will use the total_usage_by_month, because usage_estimate is not available.
+BOGUS: There should be a flag field, so we can select only summary records.
+
+*/
+{
+  $schema: "https://vega.github.io/schema/vega/v3.json",
+  padding: 5,
+
+  data: [
+  {
+    name: "valid",
+    url: {
+      index: "wiley_first",
+      body: {
+        size: 10000,
+        "query": {
+          "exists" : { "field" : "price" }
+        }
+        _source: ["price", "total_usage_by_month", "journal", "doi"]
+      }
+    },
+    format: {
+      property: "hits.hits"
+    },
+    transform: [
+      { 
+        type: "formula", 
+        expr: "datum._source.doi"
+        as: "doi"      
+      },
+      { 
+        type: "formula", 
+        expr: '''
+          "http://localhost:5601/app/kibana#/dashboard/" + details_dashboard_id + 
+          "?_a=(description:'',filters:!((meta:(index:" + index_id + 
+          ",key:doi,params:(query:'" + datum.doi + "'),value:'" + datum.doi + "')," + 
+          "query:(match:(doi:(query:'" + datum.doi + "'))))))"
+          ''', 
+        as: "details_link"      
+      },
+      {
+        type: "filter",
+        expr: "datum._source.price != null && datum._source.total_usage_by_month != null"
+      }
+    ]
+  }
+  ],
+  
+  signals: [
+  
+    # 
+    # These are hard-coded constants. 
+    #
+    # The "href" link on each bubble requires a complicated URL which includes the ID 
+    # (not the name) of the Kibana dashboard, and the ID of the Index.
+    #
+    # If the system is rebuilt, these IDs will change, and these constants must be 
+    # changed to match.
+    # 
+  
+    {
+      name: "details_dashboard_id",
+      update: "'949b1910-0f7a-11e9-a848-657a517453b9'"
+    },
+    {
+      name: "index_id",
+      update: "'a4b76300-fe2f-11e8-a539-d9dfb80e6e65'"
+    }
+  ],
+  
+  scales: [
+    {
+      name: "x",
+      type: "log",
+      round: true,
+      nice: true,
+      zero: false,
+      domain: {data: "valid", field: "_source.price"},
+      range: "width"
+    },
+    {
+      name: "y",
+      type: "linear",
+      round: true,
+      nice: true,
+      zero: true,
+      domain: {data: "valid", field: "_source.total_usage_by_month"},
+      range: "height"
+    }
+  ],
+
+  axes: [
+    {
+      scale: "x",
+      grid: true,
+      domain: false,
+      orient: "bottom",
+      tickCount: 5,
+      title: "Price"
+    },
+    {
+      scale: "y",
+      grid: true,
+      domain: false,
+      orient: "left",
+      titlePadding: 5,
+      title: "Average Usage"
+    }
+  ],
+
+  marks: [
+    {
+      name: "marks",
+      type: "symbol",
+      from: {data: "valid"},
+      encode: {
+        enter: {
+          x: {scale: "x", field: "_source.price"},
+          y: {scale: "y", field: "_source.total_usage_by_month"},
+          shape: {value: "circle"},
+          strokeWidth: {value: 2},
+          opacity: {value: 0.5},
+          stroke: {value: "#4682b4"},
+          fill: {value: "transparent"},
+          tooltip: {field: "_source.journal"}
+          href: {field: "details_link"}
+        }
+      }
+    }
+  ]
+}

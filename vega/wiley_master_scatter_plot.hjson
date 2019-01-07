@@ -1,82 +1,206 @@
-/*
----------------------
+/* -----------------------------------------------------------------------------
 
 Scatter-plot of usage estimate (linear) vs. price (log). 
 
 Not interactive
 
----------------------
+--------------------------------------------------------------------------------
 
 Notes: 
 
----------------------
-*/
-{
-  $schema: "https://vega.github.io/schema/vega/v3.json",
-  padding: 5,
+----------------------------------------------------------------------------- */
 
-  data: [
-  {
-    name: "valid",
-    url: {
-      index: "wiley_first",
-      body: {
-        size: 10000,
-        "query": {
-          "term" : { "record_type" : "summary" }
-        }
-        _source: ["price", "total_usage_estimate", "journal", "doi"]
-      }
-    },
-    format: {
-      property: "hits.hits"
-    },
-    transform: [
-      { 
-        type: "formula", 
-        expr: "datum._source.doi"
-        as: "doi"      
-      },
-      { 
-        type: "formula", 
-        expr: '''
-          "http://localhost:5601/app/kibana#/dashboard/" + details_dashboard_id + 
-          "?_a=(description:'',filters:!((meta:(index:" + index_id + 
-          ",key:doi,params:(query:'" + datum.doi + "'),value:'" + datum.doi + "')," + 
-          "query:(match:(doi:(query:'" + datum.doi + "'))))))"
-          ''', 
-        as: "details_link"      
-      },
-      {
-        type: "filter",
-        expr: "datum._source.price != null && datum._source.total_usage_estimate != null"
-      }
-    ]
-  }
-  ],
+{
+  $schema: "https://vega.github.io/schema/vega/v3.json"
+  description: "An interactive scatter plot for selecting journals to inspect."
+  padding: 5
+
+  /* ---------------------------------------------------------------------------
   
+  DATA
+  
+  Create several data sets, because the logarithmic axes cannot show values of
+  zero. (Missing values and zero values are treated the same).
+  
+  - raw_summaries:
+    - all of the available summary records
+  - price_range:
+    - has a non-zero value for price (used to find price extent)
+  - usage_range:
+    - has a non-zero value for usage (used to find usage extent)
+  
+  - has_both:
+    - contains both price and usage, appears in the body of the chart
+  - has_only_price:
+    - contains price but no usage, appears along the X-axis of the chart
+  - has_only_usage:
+    - contains usage but no price, appears along the Y-axis of the chart
+  - has_neither:
+    - contains neither price nor usage, tallied near the origin of the chart
+    
+  This section is co-dependent with "signals", since it uses "index_id" and 
+  "details_dashboard_id" in the formula for "details_link".
+  
+  --------------------------------------------------------------------------- */
+  data: [
+    {
+      name: "raw_summaries"
+      url: {
+        index: "wiley_first"
+        body: {
+          size: 10000
+          "query": {
+            "term" : { "record_type" : "summary" }
+          }
+          _source: ["price", "total_usage_estimate", "journal", "doi"]
+        }
+      }
+      format: {
+        property: "hits.hits"
+      }
+      transform: [
+        { 
+          type: "formula"
+          expr: "datum._source.doi"
+          as: "doi"      
+        }
+        { 
+          type: "formula" 
+          expr: '''
+            "http://localhost:5601/app/kibana#/dashboard/" + details_dashboard_id + 
+            "?_a=(description:'',filters:!((meta:(index:" + index_id + 
+            ",key:doi,params:(query:'" + datum.doi + "'),value:'" + datum.doi + "')," + 
+            "query:(match:(doi:(query:'" + datum.doi + "'))))))"
+            '''
+          as: "details_link"      
+        }
+      ]
+    }
+    
+    {
+      "name": "price_range"
+      "source": "raw_summaries"
+      "transform": [
+        {
+          type: "filter"
+          expr: '''
+            datum._source.price != null && 
+            datum._source.price > 0
+            '''
+        }
+      ]
+    }
+    
+    {
+      "name": "usage_range"
+      "source": "raw_summaries"
+      "transform": [
+        {
+          type: "filter"
+          expr: '''
+            datum._source.total_usage_estimate != null && 
+            datum._source.total_usage_estimate > 0
+            '''
+        }
+      ]
+    }
+    
+    {
+      "name": "has_both"
+      "source": "raw_summaries"
+      "transform": [
+        {
+          type: "filter"
+          expr: '''
+            (datum._source.price != null && 
+             datum._source.price > 0) &&
+            (datum._source.total_usage_estimate != null &&
+             datum._source.total_usage_estimate > 0)
+            '''
+        }
+      ]
+    }
+    
+    {
+      "name": "has_only_price"
+      "source": "raw_summaries"
+      "transform": [
+        {
+          type: "filter"
+          expr: '''
+            (datum._source.price != null && 
+             datum._source.price > 0) &&
+            (datum._source.total_usage_estimate == null ||
+             datum._source.total_usage_estimate <= 0)
+            '''
+        }
+      ]
+    }
+    
+    {
+      "name": "has_only_usage"
+      "source": "raw_summaries"
+      "transform": [
+        {
+          type: "filter"
+          expr: '''
+            (datum._source.price == null || 
+             datum._source.price <= 0) &&
+            (datum._source.total_usage_estimate != null &&
+             datum._source.total_usage_estimate > 0)
+            '''
+        }
+      ]
+    }
+    
+    {
+      "name": "has_neither"
+      "source": "raw_summaries"
+      "transform": [
+        {
+          type: "filter"
+          expr: '''
+            (datum._source.price == null || 
+             datum._source.price <= 0) &&
+            (datum._source.total_usage_estimate == null ||
+             datum._source.total_usage_estimate <= 0)
+            '''
+        }
+      ]
+    }
+  ]
+  
+  /* ---------------------------------------------------------------------------
+  
+  SIGNALS
+  
+  --------------------------------------------------------------------------- */
   signals: [
   
     # 
-    # These are hard-coded constants. 
+    # These are hard-coded constants, which might need to change when the system 
+    # is rebuilt. 
     #
     # The "href" link on each bubble requires a complicated URL which includes the ID 
     # (not the name) of the Kibana dashboard, and the ID of the Index.
     #
-    # If the system is rebuilt, these IDs will change, and these constants must be 
-    # changed to match.
+  
+    { name: "details_dashboard_id", value: "'949b1910-0f7a-11e9-a848-657a517453b9'" }
+    { name: "index_id", value: "'a4b76300-fe2f-11e8-a539-d9dfb80e6e65'" }
+  
+    # 
+    # These are hard-coded constants, which affect the visual layout.
     # 
   
-    {
-      name: "details_dashboard_id",
-      update: "'949b1910-0f7a-11e9-a848-657a517453b9'"
-    },
-    {
-      name: "index_id",
-      update: "'a4b76300-fe2f-11e8-a539-d9dfb80e6e65'"
-    }
-  ],
+    { "name": "nullSize", "value": 8 }
+    { "name": "nullGap", "update": "nullSize + 10" }
+  ]
   
+  /* ---------------------------------------------------------------------------
+  
+  SCALES
+  
+  --------------------------------------------------------------------------- */
   scales: [
     {
       name: "x",
@@ -84,7 +208,7 @@ Notes:
       round: true,
       nice: true,
       zero: false,
-      domain: {data: "valid", field: "_source.price"},
+      domain: {data: "has_both", field: "_source.price"},
       range: "width"
     },
     {
@@ -93,11 +217,16 @@ Notes:
       round: true,
       nice: true,
       zero: true,
-      domain: {data: "valid", field: "_source.total_usage_estimate"},
+      domain: {data: "has_both", field: "_source.total_usage_estimate"},
       range: "height"
     }
   ],
 
+  /* ---------------------------------------------------------------------------
+  
+  AXES
+  
+  --------------------------------------------------------------------------- */
   axes: [
     {
       scale: "x",
@@ -117,11 +246,16 @@ Notes:
     }
   ],
 
+  /* ---------------------------------------------------------------------------
+  
+  MARKS
+  
+  --------------------------------------------------------------------------- */
   marks: [
     {
       name: "marks",
       type: "symbol",
-      from: {data: "valid"},
+      from: {data: "has_both"},
       encode: {
         enter: {
           x: {scale: "x", field: "_source.price"},

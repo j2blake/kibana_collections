@@ -5,13 +5,13 @@ Produce an array of data structures for Elasticsearch records from the curried d
 
 The Elasticsearch records should look like these:
 
-doi, journal, proprietary_id, print_issn, online_issn, usage_month, usage_month_stamp, month_usage_count
+record_type, doi, journal, proprietary_id, print_issn, online_issn, usage_month, usage_month_stamp, month_usage_count
   one for each doi / usage_month combination
 
-doi, journal, proprietary_id, print_issn, online_issn, usage_year, usage_year_stamp, year_of_publication, year_of_publication_stamp, pubyear_usage_count
+record_type, doi, journal, proprietary_id, print_issn, online_issn, usage_year, usage_year_stamp, year_of_publication, year_of_publication_stamp, pubyear_usage_count
   one for each doi / usage_year / year_of_publication combination
 
-doi, journal, proprietary_id, print_issn, online_issn, total_usage_by_month, total_usage_by_year_of_publication, price
+record_type, doi, journal, proprietary_id, print_issn, online_issn, total_usage_by_month, total_usage_by_year_of_publication, price
   one for each doi
 
 ------------------------------------------
@@ -45,6 +45,7 @@ module WileyFiles
     def create_summary_record(doi, data)
       @reporter.report(:summary_record, doi: doi)
       record = {}
+      record.at("record_type") << "summary"
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
       record.at("proprietary_id") << data.at("proprietary_id")
@@ -52,13 +53,28 @@ module WileyFiles
       record.at("online_issn") << data.at("online_issn")
       record.at("total_usage_by_month") << data.at("total_usage", "by_month")
       record.at("total_usage_by_year_of_publication") << data.at("total_usage", "by_year_of_publication")
+      record.at("total_usage_estimate") << estimate_total_usage(data)
       record.at("price") << data.at("price")
       return record
+    end
+    
+    # Usage by month different from usage by YOP? Take the average.
+    def estimate_total_usage(data)
+      by_month = data.at("total_usage", "by_month").get
+      by_yop = data.at("total_usage", "by_year_of_publication").get
+      if by_month.nil? 
+        by_yop
+      elsif by_yop.nil? 
+        by_month
+      else
+        (by_month + by_yop) / 2
+      end
     end
 
     def create_by_month_record(doi, data, month, count)
       @reporter.report(:by_month_record, doi: doi)
       record = {}
+      record.at("record_type") << "by_month"
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
       record.at("proprietary_id") << data.at("proprietary_id")
@@ -73,6 +89,7 @@ module WileyFiles
     def create_by_year_of_publication_record(doi, data, request_year, publish_year, count)
       @reporter.report(:by_year_of_publication_record, doi: doi)
       record = {}
+      record.at("record_type") << "by_yop"
       record.at("doi") << doi
       record.at("journal") << data.at("journal")
       record.at("proprietary_id") << data.at("proprietary_id")

@@ -1,14 +1,15 @@
 /*
+---------------------
 
 Scatter-plot of usage estimate (linear) vs. price (log). 
 
 Not interactive
 
--------------
+---------------------
 
-BOGUS: for now, we will use the total_usage_by_month, because usage_estimate is not available.
-BOGUS: There should be a flag field, so we can select only summary records.
+Notes: 
 
+---------------------
 */
 {
   $schema: "https://vega.github.io/schema/vega/v3.json",
@@ -22,9 +23,9 @@ BOGUS: There should be a flag field, so we can select only summary records.
       body: {
         size: 10000,
         "query": {
-          "exists" : { "field" : "price" }
+          "term" : { "record_type" : "summary" }
         }
-        _source: ["price", "total_usage_by_month", "journal", "doi"]
+        _source: ["price", "total_usage_estimate", "journal", "doi"]
       }
     },
     format: {
@@ -48,7 +49,7 @@ BOGUS: There should be a flag field, so we can select only summary records.
       },
       {
         type: "filter",
-        expr: "datum._source.price != null && datum._source.total_usage_by_month != null"
+        expr: "datum._source.price != null && datum._source.total_usage_estimate != null"
       }
     ]
   }
@@ -92,7 +93,7 @@ BOGUS: There should be a flag field, so we can select only summary records.
       round: true,
       nice: true,
       zero: true,
-      domain: {data: "valid", field: "_source.total_usage_by_month"},
+      domain: {data: "valid", field: "_source.total_usage_estimate"},
       range: "height"
     }
   ],
@@ -124,7 +125,7 @@ BOGUS: There should be a flag field, so we can select only summary records.
       encode: {
         enter: {
           x: {scale: "x", field: "_source.price"},
-          y: {scale: "y", field: "_source.total_usage_by_month"},
+          y: {scale: "y", field: "_source.total_usage_estimate"},
           shape: {value: "circle"},
           strokeWidth: {value: 2},
           opacity: {value: 0.5},

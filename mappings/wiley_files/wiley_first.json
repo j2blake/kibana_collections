@@ -2,6 +2,9 @@
 	"mappings": {
 		"_doc": {
 			"properties": {
+				"record_type": {
+					"type": "keyword"
+				},
 				"doi": {
 					"type": "keyword"
 				},
@@ -21,6 +24,9 @@
 					"type": "integer"
 				},
 				"total_usage_by_year_of_publication": {
+					"type": "integer"
+				},
+				"total_usage_estimate": {
 					"type": "integer"
 				},
 				"price": {

@@ -188,12 +188,16 @@ Notes:
     { name: "details_dashboard_id", value: "'949b1910-0f7a-11e9-a848-657a517453b9'" }
     { name: "index_id", value: "'a4b76300-fe2f-11e8-a539-d9dfb80e6e65'" }
   
+    #
+    # These control the pan and zoom of the chart.
+    #
+    { name: "circle_size", value: 20 }
+    
     # 
     # These are hard-coded constants, which affect the visual layout.
     # 
   
-    { "name": "nullSize", "value": 8 }
-    { "name": "nullGap", "update": "nullSize + 10" }
+    { name: "null_gap", update: "circle_size + 10" }
   ]
   
   /* ---------------------------------------------------------------------------
@@ -203,24 +207,24 @@ Notes:
   --------------------------------------------------------------------------- */
   scales: [
     {
-      name: "x",
-      type: "log",
-      round: true,
-      nice: true,
-      zero: false,
-      domain: {data: "has_both", field: "_source.price"},
+      name: "xscale"
+      type: "log"
+      round: true
+      nice: true
+      zero: false
+      domain: {data: "has_both", field: "_source.price"}
       range: "width"
-    },
+    }
     {
-      name: "y",
-      type: "linear",
-      round: true,
-      nice: true,
-      zero: true,
-      domain: {data: "has_both", field: "_source.total_usage_estimate"},
+      name: "yscale"
+      type: "log"
+      round: true
+      nice: true
+      zero: false
+      domain: {data: "has_both", field: "_source.total_usage_estimate"}
       range: "height"
     }
-  ],
+  ]
 
   /* ---------------------------------------------------------------------------
   
@@ -229,22 +233,25 @@ Notes:
   --------------------------------------------------------------------------- */
   axes: [
     {
-      scale: "x",
-      grid: true,
-      domain: false,
-      orient: "bottom",
-      tickCount: 5,
+      scale: "xscale"
+      grid: true
+      domain: false
+      orient: "bottom"
+      offset: {signal: "null_gap"}
+      tickCount: 5
       title: "Price"
-    },
-    {
-      scale: "y",
-      grid: true,
-      domain: false,
-      orient: "left",
-      titlePadding: 5,
-      title: "Average Usage"
     }
-  ],
+    {
+      scale: "yscale"
+      grid: true
+      domain: false
+      orient: "left"
+      offset: {signal: "null_gap"}
+      tickCount: 6
+      titlePadding: 5
+      title: "Estimated Usage"
+    }
+  ]
 
   /* ---------------------------------------------------------------------------
   
@@ -253,18 +260,19 @@ Notes:
   --------------------------------------------------------------------------- */
   marks: [
     {
-      name: "marks",
-      type: "symbol",
-      from: {data: "has_both"},
+      name: "both_marks"
+      type: "symbol"
+      from: {data: "has_both"}
       encode: {
         enter: {
-          x: {scale: "x", field: "_source.price"},
-          y: {scale: "y", field: "_source.total_usage_estimate"},
-          shape: {value: "circle"},
-          strokeWidth: {value: 2},
-          opacity: {value: 0.5},
-          stroke: {value: "#4682b4"},
-          fill: {value: "transparent"},
+          x: {scale: "xscale", field: "_source.price"}
+          y: {scale: "yscale", field: "_source.total_usage_estimate"}
+          shape: {value: "circle"}
+          size: {signal: "circle_size"}
+          strokeWidth: {value: 2}
+          opacity: {value: 0.5}
+          stroke: {value: "#4682b4"}
+          fill: {value: "green"}
           tooltip: {field: "_source.journal"}
           href: {field: "details_link"}
         }

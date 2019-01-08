@@ -38,8 +38,11 @@ Notes:
   - has_neither:
     - contains neither price nor usage, tallied near the origin of the chart
     
-  This section is co-dependent with "signals", since it uses "index_id" and 
-  "details_dashboard_id" in the formula for "details_link".
+  This section is co-dependent with "signals", since:
+  - it uses "index_id" and "details_dashboard_id" (from "signals") in the 
+    formula for "details_link".
+  - it creates "x_extent" and "y_extent" which initializes "x_domain" and 
+    "y_domain" (in "signals").
   
   --------------------------------------------------------------------------- */
   data: [
@@ -88,9 +91,12 @@ Notes:
             datum._source.price > 0
             '''
         }
+        {
+          type: "extent", field: "_source.price", signal: "x_extent"
+        }
       ]
     }
-    
+
     {
       "name": "usage_range"
       "source": "raw_summaries"
@@ -102,9 +108,12 @@ Notes:
             datum._source.total_usage_estimate > 0
             '''
         }
+        {
+          type: "extent", field: "_source.total_usage_estimate", signal: "y_extent"
+        }
       ]
     }
-    
+   
     {
       "name": "has_both"
       "source": "raw_summaries"
@@ -191,6 +200,115 @@ Notes:
     #
     # These control the pan and zoom of the chart.
     #
+    
+    # Are we panning? Where did it begin? [x, y]
+    {
+      name: "down" 
+      value: null
+      on: [
+        {events: "mousedown", update: "xy()"}
+      ]
+    }
+    
+    # What was the existing pan when we started the current pan?
+    {
+      name: "pan_previous"
+      value: [0, 0]
+      on: [ { events: "mousedown", update: "slice(pan)" } ]
+    }
+    
+    # How far have we panned this time? [delta-x, delta-y]
+    {
+      name: "delta"
+      value: [0, 0]
+      on: [
+        { events: [
+            {
+              source: "window", type: "mousemove", consume: true
+              between: [{type: "mousedown"}, {source: "window", type: "mouseup"}]
+            }
+          ]
+          update: "down ? [down[0]-x(), y()-down[1]] : [0,0]"
+        }
+      ]
+    }
+
+    # How far have we panned, altogether? (in pixels)
+    # Note that this already has the zoom applied to it, since delta is always in pixels.
+    {
+      name: "pan" 
+      value: [0, 0]
+      on: [
+        {
+          events: {signal: "delta"}
+          update: "[pan_previous[0] + delta[0], pan_previous[1] + delta[1]]"
+        }
+        {
+          # This transform insures that the data mapped to the anchor point doesn't move when we zoom.
+          events: {signal: "zoom"}
+          update: "[pan[0] + anchor[0]/zoom_previous - anchor[0]/zoom, pan[1] - anchor[1]/zoom_previous + anchor[1]/zoom]"
+        }
+      ]
+    }
+
+    # Where was the mouse when the zoom began this time?
+    {
+      name: "anchor"
+      value: [0, 0]
+      on: [
+        { events: "wheel", update: "[x(), y()]" }
+      ]
+    }
+    
+    # What was the existing zoom when we started the current zoom?
+    {
+      name: "zoom_previous"
+      value: 1
+      on: [
+        { events: "wheel", update: "zoom" }
+      ]
+    }
+    
+	# How far have we zoomed, altogether?
+	{
+	  name: "zoom"
+      value: 1
+      on: [
+        { 
+          events: "wheel!", force: true
+          update: "zoom_previous * pow(1.001, event.deltaY * pow(16, event.deltaMode))" 
+        }
+      ]
+    }
+
+    # How do the pan and zoom affect the visible domain?
+    {
+      name: "x_domain_current"
+      update: "slice(x_extent)"
+      on: [
+        {
+          events: [{signal: "pan"}, {signal: "zoom"}]
+          update: "[invert('x_scale_original', scale('x_scale_original', x_extent[0]) / zoom + pan[0]), invert('x_scale_original', (scale('x_scale_original', x_extent[1]) / zoom + pan[0])) ]"
+        }
+      ] 
+    }
+    {
+      name: "y_domain_current"
+      update: "slice(y_extent)"
+      on: [
+        {
+          events: [{signal: "pan"}, {signal: "zoom"}]
+          update: "[invert('y_scale_original', scale('y_scale_original', y_extent[0]) / zoom - pan[1]), invert('y_scale_original', (scale('y_scale_original', y_extent[1]) / zoom - pan[1])) ]"
+        }
+      ] 
+    }
+
+    
+    
+    
+    
+    
+    
     { name: "circle_size", value: 20 }
     
     # 
@@ -207,21 +325,35 @@ Notes:
   --------------------------------------------------------------------------- */
   scales: [
     {
-      name: "xscale"
+      name: "x_scale_original"
       type: "log"
-      round: true
       nice: true
+      round: true
       zero: false
-      domain: {data: "has_both", field: "_source.price"}
+      domain: {signal: "x_extent"}
       range: "width"
     }
     {
-      name: "yscale"
+      name: "y_scale_original"
       type: "log"
-      round: true
       nice: true
+      round: true
       zero: false
-      domain: {data: "has_both", field: "_source.total_usage_estimate"}
+      domain: {signal: "y_extent"}
+      range: "height"
+    }
+    {
+      name: "x_scale"
+      type: "log"
+      zero: false
+      domain: {signal: "x_domain_current"}
+      range: "width"
+    }
+    {
+      name: "y_scale"
+      type: "log"
+      zero: false
+      domain: {signal: "y_domain_current"}
       range: "height"
     }
   ]
@@ -233,21 +365,19 @@ Notes:
   --------------------------------------------------------------------------- */
   axes: [
     {
-      scale: "xscale"
+      scale: "x_scale"
       grid: true
       domain: false
       orient: "bottom"
       offset: {signal: "null_gap"}
-      tickCount: 5
       title: "Price"
     }
     {
-      scale: "yscale"
+      scale: "y_scale"
       grid: true
       domain: false
       orient: "left"
       offset: {signal: "null_gap"}
-      tickCount: 6
       titlePadding: 5
       title: "Estimated Usage"
     }
@@ -263,18 +393,21 @@ Notes:
       name: "both_marks"
       type: "symbol"
       from: {data: "has_both"}
+      clip: true
       encode: {
         enter: {
-          x: {scale: "xscale", field: "_source.price"}
-          y: {scale: "yscale", field: "_source.total_usage_estimate"}
           shape: {value: "circle"}
-          size: {signal: "circle_size"}
           strokeWidth: {value: 2}
           opacity: {value: 0.5}
           stroke: {value: "#4682b4"}
           fill: {value: "green"}
           tooltip: {field: "_source.journal"}
           href: {field: "details_link"}
+        }
+        update: {
+          x: {scale: "x_scale", field: "_source.price"}
+          y: {scale: "y_scale", field: "_source.total_usage_estimate"}
+          size: {signal: "circle_size"}
         }
       }
     }

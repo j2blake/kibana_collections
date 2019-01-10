@@ -194,8 +194,8 @@ Notes:
     # (not the name) of the Kibana dashboard, and the ID of the Index.
     #
   
-    { name: "details_dashboard_id", value: "'949b1910-0f7a-11e9-a848-657a517453b9'" }
-    { name: "index_id", value: "'a4b76300-fe2f-11e8-a539-d9dfb80e6e65'" }
+    { name: "details_dashboard_id", value: "949b1910-0f7a-11e9-a848-657a517453b9" }
+    { name: "index_id", value: "a4b76300-fe2f-11e8-a539-d9dfb80e6e65" }
   
     #
     # These control the pan and zoom of the chart.
@@ -303,19 +303,41 @@ Notes:
       ] 
     }
 
+    # How large are the circles?
+    {
+      name: "circle_size"
+      value: 30
+      on: [
+        {
+          events: {signal: "zoom"}
+          update: "30 * zoom"
+        }
+      ]
+    }
     
+    # How much room do we leave for the nulls?
+    {
+      name: "null_gap"
+      value: 40
+#      on: [
+#        {
+#          events: {signal: "circle_size"}
+#          update: "10 + circle_size"
+#        }
+#      ]
+    }
     
+    # Clip the usage_only marks at the top and bottom of the chart.
+    { 
+      name: "usage_clip_path"
+      update: "'M0,0 h-50 v' + height + ' h50 Z'" 
+    }
     
-    
-    
-    
-    { name: "circle_size", value: 20 }
-    
-    # 
-    # These are hard-coded constants, which affect the visual layout.
-    # 
-  
-    { name: "null_gap", update: "circle_size + 10" }
+    # Clip the price_only marks at the left and right sides of the chart.
+    { 
+      name: "price_clip_path"
+      update: "'M0,' + height + ' v50 h' + width + ' v-50 Z'" 
+    }
   ]
   
   /* ---------------------------------------------------------------------------
@@ -369,7 +391,7 @@ Notes:
       grid: true
       domain: false
       orient: "bottom"
-      offset: {signal: "null_gap"}
+      offset: 20
       title: "Price"
     }
     {
@@ -377,7 +399,7 @@ Notes:
       grid: true
       domain: false
       orient: "left"
-      offset: {signal: "null_gap"}
+      offset: 20
       titlePadding: 5
       title: "Estimated Usage"
     }
@@ -389,6 +411,8 @@ Notes:
   
   --------------------------------------------------------------------------- */
   marks: [
+
+    # Circles in the main area of the graph for journals with both price and usage.
     {
       name: "both_marks"
       type: "symbol"
@@ -398,15 +422,68 @@ Notes:
         enter: {
           shape: {value: "circle"}
           strokeWidth: {value: 2}
-          opacity: {value: 0.5}
-          stroke: {value: "#4682b4"}
+          stroke: {value: "black"}
           fill: {value: "green"}
+          opacity: {value: 0.4}
           tooltip: {field: "_source.journal"}
           href: {field: "details_link"}
         }
         update: {
           x: {scale: "x_scale", field: "_source.price"}
           y: {scale: "y_scale", field: "_source.total_usage_estimate"}
+          size: {signal: "circle_size"}
+        }
+      }
+    }
+    
+    # Circles on the Y-axis for journals with usage but no price.
+    {
+      name: "usage_marks"
+      type: "symbol"
+      from: {data: "has_only_usage"}
+      clip: {path: {signal: "usage_clip_path"}}
+      encode: {
+        enter: {
+          shape: {value: "circle"}
+          strokeWidth: {value: 2}
+          stroke: {value: "black"}
+          fill: {value: "blue"}
+          opacity: {value: 0.4}
+          tooltip: {field: "_source.journal"}
+          href: {field: "details_link"}
+        }
+        update: {
+          x: {value: -10}
+          y: {scale: "y_scale", field: "_source.total_usage_estimate"}
+          size: {signal: "circle_size"}
+        }
+      }
+    }
+    
+    # Circles on the X-axis for journals with price but no usage.
+    {
+      name: "price_marks"
+      type: "symbol"
+      from: {data: "has_only_price"}
+    #  clip: {path: {signal: "price_clip_path"}}
+      encode: {
+        enter: {
+          shape: {value: "circle"}
+          strokeWidth: {value: 2}
+          stroke: {value: "black"}
+          fill: {value: "blue"}
+          opacity: {value: 0.4}
+          tooltip: {field: "_source.journal"}
+          href: {field: "details_link"}
+        }
+        update: {
+          x: {scale: "x_scale", field: "_source.price"}
+          x: {scale: "x_scale", field: "_source.price"}
+          # Why do these y-expressions cause the re-drawing to freeze (killing zoom, pan)
+          #  y: {signal: "price_y", offset: 15}
+          #  y: {signal: "height + 15"}
+          # But this one works fine?
+          y: {scale: "y_scale", signal: "y_domain_current[0]", offset: 10}
           size: {signal: "circle_size"}
         }
       }

@@ -1,0 +1,182 @@
+[
+  {
+    "_id": "b4f11a30-0f79-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley Usage by year and month",
+      "visState": "{\"title\":\"Wiley Usage by year and month\",\"type\":\"line\",\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"grid\":{\"categoryLines\":true,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"legendPosition\":\"bottom\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Usage\"},\"drawLinesBetweenPoints\":true,\"mode\":\"normal\",\"show\":\"true\",\"showCircles\":true,\"type\":\"histogram\",\"valueAxis\":\"ValueAxis-1\",\"interpolate\":\"step-after\"}],\"times\":[],\"type\":\"line\",\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Usage\"},\"type\":\"value\"}],\"orderBucketsBySum\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"month_usage_count\",\"customLabel\":\"Usage\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"usage_month_stamp_mm\",\"interval\":1,\"min_doc_count\":false,\"extended_bounds\":{},\"customLabel\":\"By month\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"histogram\",\"schema\":\"split\",\"params\":{\"field\":\"usage_month_stamp_yyyy\",\"interval\":1,\"extended_bounds\":{},\"customLabel\":\"By year\",\"row\":true}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"exists\":{\"field\":\"month_usage_count\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"key\":\"month_usage_count\",\"negate\":false,\"type\":\"exists\",\"value\":\"exists\"}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "4d8be390-0540-11e9-9954-17b36fad23b1",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley usage by month",
+      "visState": "{\"aggs\":[{\"enabled\":true,\"id\":\"1\",\"params\":{\"customLabel\":\"Usage by month\",\"field\":\"month_usage_count\"},\"schema\":\"metric\",\"type\":\"sum\"},{\"enabled\":true,\"id\":\"2\",\"params\":{\"customInterval\":\"2h\",\"customLabel\":\"Month of usage\",\"extended_bounds\":{},\"field\":\"usage_month_stamp\",\"interval\":\"M\",\"min_doc_count\":1},\"schema\":\"segment\",\"type\":\"date_histogram\"}],\"params\":{\"addLegend\":true,\"addTimeMarker\":false,\"addTooltip\":true,\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"labels\":{\"filter\":true,\"rotate\":90,\"show\":true,\"truncate\":100},\"position\":\"bottom\",\"scale\":{\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{},\"type\":\"category\"}],\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"legendPosition\":\"right\",\"seriesParams\":[{\"data\":{\"id\":\"1\",\"label\":\"Usage by month\"},\"drawLinesBetweenPoints\":true,\"mode\":\"normal\",\"show\":\"true\",\"showCircles\":true,\"type\":\"histogram\",\"valueAxis\":\"ValueAxis-1\"}],\"times\":[],\"type\":\"line\",\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"labels\":{\"filter\":false,\"rotate\":0,\"show\":true,\"truncate\":100},\"name\":\"LeftAxis-1\",\"position\":\"left\",\"scale\":{\"mode\":\"normal\",\"type\":\"linear\"},\"show\":true,\"style\":{},\"title\":{\"text\":\"Usage by month\"},\"type\":\"value\"}]},\"title\":\"Wiley usage by month\",\"type\":\"line\"}",
+      "uiStateJSON": "{\"vis\":{\"legendOpen\":false}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "9693f420-0f80-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley usage by year of publication by year",
+      "visState": "{\"title\":\"Wiley usage by year of publication by year\",\"type\":\"line\",\"params\":{\"type\":\"line\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"},\"valueAxis\":\"ValueAxis-1\"},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100,\"rotate\":90},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Usage\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Usage\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"bottom\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"pubyear_usage_count\",\"customLabel\":\"Usage\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year_of_publication_stamp\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Year of publication\"}},{\"id\":\"3\",\"enabled\":true,\"type\":\"histogram\",\"schema\":\"split\",\"params\":{\"field\":\"usage_year_stamp_yyyy\",\"interval\":1,\"extended_bounds\":{},\"customLabel\":\"Used in\",\"row\":true}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"meta\":{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"negate\":false,\"disabled\":false,\"alias\":null,\"type\":\"exists\",\"key\":\"usage_year_stamp\",\"value\":\"exists\"},\"exists\":{\"field\":\"usage_year_stamp\"},\"$state\":{\"store\":\"appState\"}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "91904d40-0f7e-11e9-a848-657a517453b9",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley usage by year of publication",
+      "visState": "{\"title\":\"Wiley usage by year of publication\",\"type\":\"line\",\"params\":{\"type\":\"line\",\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100,\"rotate\":90},\"title\":{}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Usage count\"}}],\"seriesParams\":[{\"show\":\"true\",\"type\":\"histogram\",\"mode\":\"normal\",\"data\":{\"label\":\"Usage count\",\"id\":\"1\"},\"valueAxis\":\"ValueAxis-1\",\"drawLinesBetweenPoints\":true,\"showCircles\":true}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"times\":[],\"addTimeMarker\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"pubyear_usage_count\",\"customLabel\":\"Usage count\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"year_of_publication_stamp\",\"interval\":\"y\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{},\"customLabel\":\"Year of publication\"}}]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "949b1910-0f7a-11e9-a848-657a517453b9",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Wiley dashboard",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"embeddableConfig\":{\"vis\":{\"legendOpen\":false}},\"gridData\":{\"x\":0,\"y\":4,\"w\":48,\"h\":10,\"i\":\"1\"},\"id\":\"4d8be390-0540-11e9-9954-17b36fad23b1\",\"panelIndex\":\"1\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{\"vis\":{\"legendOpen\":false}},\"gridData\":{\"x\":0,\"y\":26,\"w\":24,\"h\":15,\"i\":\"2\"},\"id\":\"b4f11a30-0f79-11e9-a848-657a517453b9\",\"panelIndex\":\"2\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":14,\"w\":48,\"h\":12,\"i\":\"4\"},\"id\":\"91904d40-0f7e-11e9-a848-657a517453b9\",\"panelIndex\":\"4\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{\"vis\":{\"legendOpen\":false}},\"gridData\":{\"x\":24,\"y\":26,\"w\":24,\"h\":15,\"i\":\"5\"},\"id\":\"9693f420-0f80-11e9-a848-657a517453b9\",\"panelIndex\":\"5\",\"type\":\"visualization\",\"version\":\"6.4.2\"},{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":41,\"w\":48,\"h\":12,\"i\":\"6\"},\"id\":\"8b80d780-0f83-11e9-a848-657a517453b9\",\"panelIndex\":\"6\",\"type\":\"search\",\"version\":\"6.4.2\"},{\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":4,\"i\":\"7\"},\"version\":\"6.4.2\",\"panelIndex\":\"7\",\"type\":\"visualization\",\"id\":\"1829aec0-104a-11e9-8ab9-5f58ee0dd318\",\"embeddableConfig\":{},\"title\":\"Return to overview\"}]",
+      "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[{\"$state\":{\"store\":\"appState\"},\"meta\":{\"alias\":null,\"disabled\":false,\"index\":\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\"key\":\"doi\",\"negate\":false,\"params\":{\"query\":\"10.1107/S20532733\"},\"type\":\"phrase\",\"value\":\"10.1107/S20532733\"},\"query\":{\"match\":{\"doi\":{\"query\":\"10.1107/S20532733\"}}}}]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "1829aec0-104a-11e9-8ab9-5f58ee0dd318",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley overview link",
+      "visState": "{\"title\":\"Wiley overview link\",\"type\":\"markdown\",\"params\":{\"fontSize\":12,\"openLinksInNewTab\":false,\"markdown\":\"[Return to overview](http://localhost:5601/app/kibana#/dashboard/c36c9140-1049-11e9-8ab9-5f58ee0dd318)\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"query\":\"\",\"language\":\"kuery\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "a4b76300-fe2f-11e8-a539-d9dfb80e6e65",
+    "_type": "index-pattern",
+    "_source": {
+      "title": "wiley_first",
+      "fields": "[{\"name\":\"_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_index\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"_score\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_source\",\"type\":\"_source\",\"count\":0,\"scripted\":false,\"searchable\":false,\"aggregatable\":false,\"readFromDocValues\":false},{\"name\":\"_type\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"doi\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"journal\",\"type\":\"string\",\"count\":4,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"month_usage_count\",\"type\":\"number\",\"count\":2,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"online_issn\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"price\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"print_issn\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"proprietary_id\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"pubyear_usage_count\",\"type\":\"number\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"total_usage_by_month\",\"type\":\"number\",\"count\":5,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"total_usage_by_year_of_publication\",\"type\":\"number\",\"count\":5,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_month\",\"type\":\"string\",\"count\":3,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_month_stamp\",\"type\":\"date\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_year\",\"type\":\"string\",\"count\":1,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_year_stamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"year_of_publication\",\"type\":\"string\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"year_of_publication_stamp\",\"type\":\"date\",\"count\":0,\"scripted\":false,\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":true},{\"name\":\"usage_month_stamp_yyyy\",\"type\":\"number\",\"count\":1,\"scripted\":true,\"script\":\"doc['usage_month_stamp'].getYear()\",\"lang\":\"expression\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"usage_month_stamp_mm\",\"type\":\"number\",\"count\":0,\"scripted\":true,\"script\":\"doc['usage_month_stamp'].getMonth() + 1\",\"lang\":\"expression\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"usage_year_stamp_yyyy\",\"type\":\"number\",\"count\":0,\"scripted\":true,\"script\":\"doc['usage_year_stamp'].getYear()\",\"lang\":\"expression\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false},{\"name\":\"details_link\",\"type\":\"string\",\"count\":1,\"scripted\":true,\"script\":\"doc['doi'].value\",\"lang\":\"painless\",\"searchable\":true,\"aggregatable\":true,\"readFromDocValues\":false}]",
+      "fieldFormatMap": "{\"usage_month_stamp\":{\"id\":\"date\",\"params\":{\"pattern\":\"YYYY-MM\"}},\"usage_month_stamp_yyyy\":{\"id\":\"number\",\"params\":{\"pattern\":\"0\"}},\"price\":{\"id\":\"number\",\"params\":{\"pattern\":\"$0,0\"}},\"usage_year_stamp_yyyy\":{\"id\":\"number\",\"params\":{\"pattern\":\"0\"}},\"details_link\":{\"id\":\"url\",\"params\":{\"urlTemplate\":\"http://localhost:5601/app/kibana#/dashboard/949b1910-0f7a-11e9-a848-657a517453b9?_a=(description:'',filters:!((meta:(index:a4b76300-fe2f-11e8-a539-d9dfb80e6e65,key:doi,params:(query:'{{value}}'),value:'{{value}}'),query:(match:(doi:(query:'{{value}}'))))))\",\"labelTemplate\":\"show details\",\"openLinkInCurrentTab\":true}}}"
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "19327de0-15c9-11e9-b02d-0121de96b86c",
+    "_type": "visualization",
+    "_source": {
+      "title": "Wiley scatter-plot selector",
+      "visState": "{\"title\":\"Wiley scatter-plot selector\",\"type\":\"vega\",\"params\":{\"spec\":\"/* -----------------------------------------------------------------------------\\n\\nScatter-plot of usage estimate (linear) vs. price (log). \\n\\nNot interactive\\n\\n--------------------------------------------------------------------------------\\n\\nNotes: \\n\\n----------------------------------------------------------------------------- */\\n\\n{\\n  $schema: \\\"https://vega.github.io/schema/vega/v3.json\\\"\\n  description: \\\"An interactive scatter plot for selecting journals to inspect.\\\"\\n  padding: 5\\n\\n  /* ---------------------------------------------------------------------------\\n  \\n  DATA\\n  \\n  Create several data sets, because the logarithmic axes cannot show values of\\n  zero. (Missing values and zero values are treated the same).\\n  \\n  - raw_summaries:\\n    - all of the available summary records\\n  - price_range:\\n    - has a non-zero value for price (used to find price extent)\\n  - usage_range:\\n    - has a non-zero value for usage (used to find usage extent)\\n  \\n  - has_both:\\n    - contains both price and usage, appears in the body of the chart\\n  - has_only_price:\\n    - contains price but no usage, appears along the X-axis of the chart\\n  - has_only_usage:\\n    - contains usage but no price, appears along the Y-axis of the chart\\n  - has_neither:\\n    - contains neither price nor usage, tallied near the origin of the chart\\n    \\n  This section is co-dependent with \\\"signals\\\", since:\\n  - it uses \\\"index_id\\\" and \\\"details_dashboard_id\\\" (from \\\"signals\\\") in the \\n    formula for \\\"details_link\\\".\\n  - it creates \\\"x_extent\\\" and \\\"y_extent\\\" which initializes \\\"x_domain\\\" and \\n    \\\"y_domain\\\" (in \\\"signals\\\").\\n  \\n  --------------------------------------------------------------------------- */\\n  data: [\\n    {\\n      name: \\\"raw_summaries\\\"\\n      url: {\\n        index: \\\"wiley_first\\\"\\n        body: {\\n          size: 10000\\n          \\\"query\\\": {\\n            \\\"term\\\" : { \\\"record_type\\\" : \\\"summary\\\" }\\n          }\\n          _source: [\\\"price\\\", \\\"total_usage_estimate\\\", \\\"journal\\\", \\\"doi\\\"]\\n        }\\n      }\\n      format: {\\n        property: \\\"hits.hits\\\"\\n      }\\n      transform: [\\n        { \\n          type: \\\"formula\\\"\\n          expr: \\\"datum._source.doi\\\"\\n          as: \\\"doi\\\"      \\n        }\\n        { \\n          type: \\\"formula\\\" \\n          expr: '''\\n            \\\"http://localhost:5601/app/kibana#/dashboard/\\\" + details_dashboard_id + \\n            \\\"?_a=(description:'',filters:!((meta:(index:\\\" + index_id + \\n            \\\",key:doi,params:(query:'\\\" + datum.doi + \\\"'),value:'\\\" + datum.doi + \\\"'),\\\" + \\n            \\\"query:(match:(doi:(query:'\\\" + datum.doi + \\\"'))))))\\\"\\n            '''\\n          as: \\\"details_link\\\"      \\n        }\\n      ]\\n    }\\n    \\n    {\\n      \\\"name\\\": \\\"price_range\\\"\\n      \\\"source\\\": \\\"raw_summaries\\\"\\n      \\\"transform\\\": [\\n        {\\n          type: \\\"filter\\\"\\n          expr: '''\\n            datum._source.price != null && \\n            datum._source.price > 0\\n            '''\\n        }\\n        {\\n          type: \\\"extent\\\", field: \\\"_source.price\\\", signal: \\\"x_extent\\\"\\n        }\\n      ]\\n    }\\n\\n    {\\n      \\\"name\\\": \\\"usage_range\\\"\\n      \\\"source\\\": \\\"raw_summaries\\\"\\n      \\\"transform\\\": [\\n        {\\n          type: \\\"filter\\\"\\n          expr: '''\\n            datum._source.total_usage_estimate != null && \\n            datum._source.total_usage_estimate > 0\\n            '''\\n        }\\n        {\\n          type: \\\"extent\\\", field: \\\"_source.total_usage_estimate\\\", signal: \\\"y_extent\\\"\\n        }\\n      ]\\n    }\\n   \\n    {\\n      \\\"name\\\": \\\"has_both\\\"\\n      \\\"source\\\": \\\"raw_summaries\\\"\\n      \\\"transform\\\": [\\n        {\\n          type: \\\"filter\\\"\\n          expr: '''\\n            (datum._source.price != null && \\n             datum._source.price > 0) &&\\n            (datum._source.total_usage_estimate != null &&\\n             datum._source.total_usage_estimate > 0)\\n            '''\\n        }\\n      ]\\n    }\\n    \\n    {\\n      \\\"name\\\": \\\"has_only_price\\\"\\n      \\\"source\\\": \\\"raw_summaries\\\"\\n      \\\"transform\\\": [\\n        {\\n          type: \\\"filter\\\"\\n          expr: '''\\n            (datum._source.price != null && \\n             datum._source.price > 0) &&\\n            (datum._source.total_usage_estimate == null ||\\n             datum._source.total_usage_estimate <= 0)\\n            '''\\n        }\\n      ]\\n    }\\n    \\n    {\\n      \\\"name\\\": \\\"has_only_usage\\\"\\n      \\\"source\\\": \\\"raw_summaries\\\"\\n      \\\"transform\\\": [\\n        {\\n          type: \\\"filter\\\"\\n          expr: '''\\n            (datum._source.price == null || \\n             datum._source.price <= 0) &&\\n            (datum._source.total_usage_estimate != null &&\\n             datum._source.total_usage_estimate > 0)\\n            '''\\n        }\\n      ]\\n    }\\n    \\n    {\\n      \\\"name\\\": \\\"has_neither\\\"\\n      \\\"source\\\": \\\"raw_summaries\\\"\\n      \\\"transform\\\": [\\n        {\\n          type: \\\"filter\\\"\\n          expr: '''\\n            (datum._source.price == null || \\n             datum._source.price <= 0) &&\\n            (datum._source.total_usage_estimate == null ||\\n             datum._source.total_usage_estimate <= 0)\\n            '''\\n        }\\n      ]\\n    }\\n  ]\\n  \\n  /* ---------------------------------------------------------------------------\\n  \\n  SIGNALS\\n  \\n  --------------------------------------------------------------------------- */\\n  signals: [\\n  \\n    # \\n    # These are hard-coded constants, which might need to change when the system \\n    # is rebuilt. \\n    #\\n    # The \\\"href\\\" link on each bubble requires a complicated URL which includes the ID \\n    # (not the name) of the Kibana dashboard, and the ID of the Index.\\n    #\\n  \\n    { name: \\\"details_dashboard_id\\\", value: \\\"949b1910-0f7a-11e9-a848-657a517453b9\\\" }\\n    { name: \\\"index_id\\\", value: \\\"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\\\" }\\n  \\n    #\\n    # These control the pan and zoom of the chart.\\n    #\\n    \\n    # Are we panning? Where did it begin? [x, y]\\n    {\\n      name: \\\"down\\\" \\n      value: null\\n      on: [\\n        {events: \\\"mousedown\\\", update: \\\"xy()\\\"}\\n      ]\\n    }\\n    \\n    # What was the existing pan when we started the current pan?\\n    {\\n      name: \\\"pan_previous\\\"\\n      value: [0, 0]\\n      on: [ { events: \\\"mousedown\\\", update: \\\"slice(pan)\\\" } ]\\n    }\\n    \\n    # How far have we panned this time? [delta-x, delta-y]\\n    {\\n      name: \\\"delta\\\"\\n      value: [0, 0]\\n      on: [\\n        { events: [\\n            {\\n              source: \\\"window\\\", type: \\\"mousemove\\\", consume: true\\n              between: [{type: \\\"mousedown\\\"}, {source: \\\"window\\\", type: \\\"mouseup\\\"}]\\n            }\\n          ]\\n          update: \\\"down ? [down[0]-x(), y()-down[1]] : [0,0]\\\"\\n        }\\n      ]\\n    }\\n\\n    # How far have we panned, altogether? (in pixels)\\n    # Note that this already has the zoom applied to it, since delta is always in pixels.\\n    {\\n      name: \\\"pan\\\" \\n      value: [0, 0]\\n      on: [\\n        {\\n          events: {signal: \\\"delta\\\"}\\n          update: \\\"[pan_previous[0] + delta[0], pan_previous[1] + delta[1]]\\\"\\n        }\\n        {\\n          # This transform insures that the data mapped to the anchor point doesn't move when we zoom.\\n          events: {signal: \\\"zoom\\\"}\\n          update: \\\"[pan[0] + anchor[0]/zoom_previous - anchor[0]/zoom, pan[1] - anchor[1]/zoom_previous + anchor[1]/zoom]\\\"\\n        }\\n      ]\\n    }\\n\\n    # Where was the mouse when the zoom began this time?\\n    {\\n      name: \\\"anchor\\\"\\n      value: [0, 0]\\n      on: [\\n        { events: \\\"wheel\\\", update: \\\"[x(), y()]\\\" }\\n      ]\\n    }\\n    \\n    # What was the existing zoom when we started the current zoom?\\n    {\\n      name: \\\"zoom_previous\\\"\\n      value: 1\\n      on: [\\n        { events: \\\"wheel\\\", update: \\\"zoom\\\" }\\n      ]\\n    }\\n    \\n\\t# How far have we zoomed, altogether?\\n\\t{\\n\\t  name: \\\"zoom\\\"\\n      value: 1\\n      on: [\\n        { \\n          events: \\\"wheel!\\\", force: true\\n          update: \\\"zoom_previous * pow(1.001, event.deltaY * pow(16, event.deltaMode))\\\" \\n        }\\n      ]\\n    }\\n\\n    # How do the pan and zoom affect the visible domain?\\n    {\\n      name: \\\"x_domain_current\\\"\\n      update: \\\"slice(x_extent)\\\"\\n      on: [\\n        {\\n          events: [{signal: \\\"pan\\\"}, {signal: \\\"zoom\\\"}]\\n          update: \\\"[invert('x_scale_original', scale('x_scale_original', x_extent[0]) / zoom + pan[0]), invert('x_scale_original', (scale('x_scale_original', x_extent[1]) / zoom + pan[0])) ]\\\"\\n        }\\n      ] \\n    }\\n    {\\n      name: \\\"y_domain_current\\\"\\n      update: \\\"slice(y_extent)\\\"\\n      on: [\\n        {\\n          events: [{signal: \\\"pan\\\"}, {signal: \\\"zoom\\\"}]\\n          update: \\\"[invert('y_scale_original', scale('y_scale_original', y_extent[0]) / zoom - pan[1]), invert('y_scale_original', (scale('y_scale_original', y_extent[1]) / zoom - pan[1])) ]\\\"\\n        }\\n      ] \\n    }\\n\\n    # How large are the circles?\\n    {\\n      name: \\\"circle_size\\\"\\n      value: 30\\n      on: [\\n        {\\n          events: {signal: \\\"zoom\\\"}\\n          update: \\\"30 * zoom\\\"\\n        }\\n      ]\\n    }\\n    \\n    # How much room do we leave for the nulls?\\n    {\\n      name: \\\"null_gap\\\"\\n      value: 40\\n#      on: [\\n#        {\\n#          events: {signal: \\\"circle_size\\\"}\\n#          update: \\\"10 + circle_size\\\"\\n#        }\\n#      ]\\n    }\\n    \\n    # Clip the usage_only marks at the top and bottom of the chart.\\n    { \\n      name: \\\"usage_clip_path\\\"\\n      update: \\\"'M0,0 h-50 v' + height + ' h50 Z'\\\" \\n    }\\n    \\n    # Clip the price_only marks at the left and right sides of the chart.\\n    { \\n      name: \\\"price_clip_path\\\"\\n      update: \\\"'M0,' + height + ' v50 h' + width + ' v-50 Z'\\\" \\n    }\\n  ]\\n  \\n  /* ---------------------------------------------------------------------------\\n  \\n  SCALES\\n  \\n  --------------------------------------------------------------------------- */\\n  scales: [\\n    {\\n      name: \\\"x_scale_original\\\"\\n      type: \\\"log\\\"\\n      nice: true\\n      round: true\\n      zero: false\\n      domain: {signal: \\\"x_extent\\\"}\\n      range: \\\"width\\\"\\n    }\\n    {\\n      name: \\\"y_scale_original\\\"\\n      type: \\\"log\\\"\\n      nice: true\\n      round: true\\n      zero: false\\n      domain: {signal: \\\"y_extent\\\"}\\n      range: \\\"height\\\"\\n    }\\n    {\\n      name: \\\"x_scale\\\"\\n      type: \\\"log\\\"\\n      zero: false\\n      domain: {signal: \\\"x_domain_current\\\"}\\n      range: \\\"width\\\"\\n    }\\n    {\\n      name: \\\"y_scale\\\"\\n      type: \\\"log\\\"\\n      zero: false\\n      domain: {signal: \\\"y_domain_current\\\"}\\n      range: \\\"height\\\"\\n    }\\n  ]\\n\\n  /* ---------------------------------------------------------------------------\\n  \\n  AXES\\n  \\n  --------------------------------------------------------------------------- */\\n  axes: [\\n    {\\n      scale: \\\"x_scale\\\"\\n      grid: true\\n      domain: false\\n      orient: \\\"bottom\\\"\\n      offset: 20\\n      title: \\\"Price\\\"\\n    }\\n    {\\n      scale: \\\"y_scale\\\"\\n      grid: true\\n      domain: false\\n      orient: \\\"left\\\"\\n      offset: 20\\n      titlePadding: 5\\n      title: \\\"Estimated Usage\\\"\\n    }\\n  ]\\n\\n  /* ---------------------------------------------------------------------------\\n  \\n  MARKS\\n  \\n  --------------------------------------------------------------------------- */\\n  marks: [\\n\\n    # Circles in the main area of the graph for journals with both price and usage.\\n    {\\n      name: \\\"both_marks\\\"\\n      type: \\\"symbol\\\"\\n      from: {data: \\\"has_both\\\"}\\n      clip: true\\n      encode: {\\n        enter: {\\n          shape: {value: \\\"circle\\\"}\\n          strokeWidth: {value: 2}\\n          stroke: {value: \\\"black\\\"}\\n          fill: {value: \\\"green\\\"}\\n          opacity: {value: 0.4}\\n          tooltip: {field: \\\"_source.journal\\\"}\\n          href: {field: \\\"details_link\\\"}\\n        }\\n        update: {\\n          x: {scale: \\\"x_scale\\\", field: \\\"_source.price\\\"}\\n          y: {scale: \\\"y_scale\\\", field: \\\"_source.total_usage_estimate\\\"}\\n          size: {signal: \\\"circle_size\\\"}\\n        }\\n      }\\n    }\\n    \\n    # Circles on the Y-axis for journals with usage but no price.\\n    {\\n      name: \\\"usage_marks\\\"\\n      type: \\\"symbol\\\"\\n      from: {data: \\\"has_only_usage\\\"}\\n      clip: {path: {signal: \\\"usage_clip_path\\\"}}\\n      encode: {\\n        enter: {\\n          shape: {value: \\\"circle\\\"}\\n          strokeWidth: {value: 2}\\n          stroke: {value: \\\"black\\\"}\\n          fill: {value: \\\"blue\\\"}\\n          opacity: {value: 0.4}\\n          tooltip: {field: \\\"_source.journal\\\"}\\n          href: {field: \\\"details_link\\\"}\\n        }\\n        update: {\\n          x: {value: -10}\\n          y: {scale: \\\"y_scale\\\", field: \\\"_source.total_usage_estimate\\\"}\\n          size: {signal: \\\"circle_size\\\"}\\n        }\\n      }\\n    }\\n    \\n    # Circles on the X-axis for journals with price but no usage.\\n    {\\n      name: \\\"price_marks\\\"\\n      type: \\\"symbol\\\"\\n      from: {data: \\\"has_only_price\\\"}\\n    #  clip: {path: {signal: \\\"price_clip_path\\\"}}\\n      encode: {\\n        enter: {\\n          shape: {value: \\\"circle\\\"}\\n          strokeWidth: {value: 2}\\n          stroke: {value: \\\"black\\\"}\\n          fill: {value: \\\"blue\\\"}\\n          opacity: {value: 0.4}\\n          tooltip: {field: \\\"_source.journal\\\"}\\n          href: {field: \\\"details_link\\\"}\\n        }\\n        update: {\\n          x: {scale: \\\"x_scale\\\", field: \\\"_source.price\\\"}\\n          x: {scale: \\\"x_scale\\\", field: \\\"_source.price\\\"}\\n          # Why do these y-expressions cause the re-drawing to freeze (killing zoom, pan)\\n          #  y: {signal: \\\"price_y\\\", offset: 15}\\n          #  y: {signal: \\\"height + 15\\\"}\\n          # But this one works fine?\\n          y: {scale: \\\"y_scale\\\", signal: \\\"y_domain_current[0]\\\", offset: 10}\\n          size: {signal: \\\"circle_size\\\"}\\n        }\\n      }\\n    }\\n  ]\\n}\\n\"},\"aggs\":[]}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "c36c9140-1049-11e9-8ab9-5f58ee0dd318",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Wiley overview",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"embeddableConfig\":{},\"gridData\":{\"x\":0,\"y\":19,\"w\":48,\"h\":15,\"i\":\"2\"},\"id\":\"8b80d780-0f83-11e9-a848-657a517453b9\",\"panelIndex\":\"2\",\"type\":\"search\",\"version\":\"6.4.2\"},{\"gridData\":{\"x\":0,\"y\":0,\"w\":48,\"h\":19,\"i\":\"3\"},\"version\":\"6.4.2\",\"panelIndex\":\"3\",\"type\":\"visualization\",\"id\":\"19327de0-15c9-11e9-b02d-0121de96b86c\",\"embeddableConfig\":{}}]",
+      "optionsJSON": "{\"darkTheme\":false,\"hidePanelTitles\":false,\"useMargins\":true}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"query\":{\"language\":\"kuery\",\"query\":\"\"},\"filter\":[]}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  },
+  {
+    "_id": "8b80d780-0f83-11e9-a848-657a517453b9",
+    "_type": "search",
+    "_source": {
+      "title": "Wiley Journals with links",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "journal",
+        "doi",
+        "price",
+        "online_issn",
+        "print_issn",
+        "details_link"
+      ],
+      "sort": [
+        "_score",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\n  \"index\": \"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\n  \"highlightAll\": true,\n  \"version\": true,\n  \"query\": {\n    \"language\": \"kuery\",\n    \"query\": \"\"\n  },\n  \"filter\": [\n    {\n      \"$state\": {\n        \"store\": \"appState\"\n      },\n      \"exists\": {\n        \"field\": \"price\"\n      },\n      \"meta\": {\n        \"alias\": null,\n        \"disabled\": false,\n        \"index\": \"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\n        \"key\": \"price\",\n        \"negate\": false,\n        \"type\": \"exists\",\n        \"value\": \"exists\"\n      }\n    },\n    {\n      \"$state\": {\n        \"store\": \"appState\"\n      },\n      \"bool\": {\n        \"must_not\": {\n          \"bool\": {\n            \"must_not\": {\n              \"exists\": {\n                \"field\": \"total_usage_by_year_of_publication\"\n              }\n            }\n          }\n        }\n      },\n      \"meta\": {\n        \"alias\": \"one or the other\",\n        \"disabled\": false,\n        \"index\": \"a4b76300-fe2f-11e8-a539-d9dfb80e6e65\",\n        \"key\": \"bool\",\n        \"negate\": false,\n        \"type\": \"custom\",\n        \"value\": \"{\\\"must_not\\\":{\\\"bool\\\":{\\\"must_not\\\":{\\\"exists\\\":{\\\"field\\\":\\\"total_usage_by_year_of_publication\\\"}}}}}\"\n      }\n    }\n  ]\n}"
+      }
+    },
+    "_meta": {
+      "savedObjectVersion": 2
+    }
+  }
+]

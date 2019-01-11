@@ -1,12 +1,38 @@
 /* -----------------------------------------------------------------------------
 
-Scatter-plot of usage estimate (linear) vs. price (log). 
+Scatter-plot of usage estimate (log) vs. price (log). 
 
-Not interactive
+Interactions:
+- Drag the chart to pan up, down, left, or right.
+- Use the mouse-wheel to zoom in or out. 
+- Hover over a circle to see the journal name as a tooltip.
+- Click on a circle to drill down to the details dashboard. 
 
 --------------------------------------------------------------------------------
 
 Notes: 
+
+The drill-down link requires that the ID of the details dashboard be 
+hard coded. Also the ID of the index pattern. Supposedly, work is in progress
+at Kibana to provide a better way for VEGA visualizations to open a dashboard.
+No timeline for that.
+
+It would be nice to have a button that would restore pan and zoom to initial
+values.
+
+If you click, intending to drag, you can accidentally click on a circle, and
+drill down instead. Perhaps the drag should require a shift-click, or a 
+right-click, or some other modifier, but so far no success at that.
+
+The axes should be offset by a varying abount, since the size of the gap 
+should vary with the size of the circles, which varies with the zoom factor.
+However, the axes behave differently depending on whether the offset value
+is a constant value or a signal. If a signal, the grid lines are offset to 
+match the ticks, which might be nice except that it leaves a vacancy on the
+opposite side of the chart. What we really want is "tickOffset", but that 
+doesn't appear to work at all.
+
+It would be nice to add some text that would explain to the user.
 
 ----------------------------------------------------------------------------- */
 

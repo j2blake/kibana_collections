@@ -1,7 +1,11 @@
-# How to build, test, etc
+# Developing and running the application
 
-## Installing the system
-__*TBD*__
+
+# ----------------------
+# From the old document
+# ----------------------
+
+# How to build, test, etc
 
 ## Loading the system
 __*TBD*__

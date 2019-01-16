@@ -23,8 +23,11 @@ Visualize the data in spreadsheets, to assist in decisions about journal subscri
 ## How does it work?
 * Check out the [Developer's notes](./doc/developer_notes.md)
 
+## How to run it?
+* [Running the system](./doc/running_the_system.md)
+
 ## How to modify it?
-* [Development and Operations](./doc/development_process_and_operations.md)
+* [Development process](./doc/development_process.md)
 
 ## Problems?
 * [Troubleshooting](./doc/troubleshooting.md)

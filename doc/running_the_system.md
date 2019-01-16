@@ -1,14 +1,4 @@
-# Developing and running the application
-
-
-# ----------------------
-# From the old document
-# ----------------------
-
-# How to build, test, etc
-
-## Loading the system
-__*TBD*__
+# Running the application
 
 ## Starting the system
 
@@ -50,8 +40,6 @@ __*TBD*__
 * 	the Kibana home page:
 	![the Kibana home page](images/kibana_home_page.png)
 
-
-
 ## Stopping the system
 
 * Open a terminal window
@@ -67,4 +55,3 @@ __*TBD*__
     ```
     Stopping 2ef82f2698b130ef4a198dcbabac49c7_elk_1 ... done
     ```
-
